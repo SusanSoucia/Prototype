@@ -1,0 +1,137 @@
+@startuml
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName WenQuanYi Micro Hei
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam maxmessagesize 140
+skinparam ParticipantPadding 30
+skinparam BoxPadding 8
+
+title 企业RAG — 用户问答流程（ReAct Agent）
+
+actor 用户 as User
+participant "Vue 3 前端\n(WebSocket)" as Browser
+participant "ChatHandler\n(ReAct 编排)" as Chat
+participant "LlmProviderRouter\n(LLM 模型路由)" as LlmRouter
+participant "AgentToolRegistry\n(工具注册中心)" as AgentTool
+participant "HybridSearchService\n(两阶段混合检索)" as Search
+participant "EmbeddingClient\n(查询向量化)" as Embedding
+participant "UsageQuotaService\n(Token 配额)" as Quota
+participant "ConversationService\n(会话管理)" as ConvSvc
+database "Elasticsearch\n(向量+全文)" as ES
+database "Redis\n(对话缓存 / 反馈)" as Redis
+database "MySQL\n(对话 / 会话持久化)" as DB
+
+== WebSocket 连接 ==
+
+Browser -> Browser: 建立 WebSocket 连接\nwss://host/ws/chat/{jwtToken}
+Chat -> Chat: jwtUtils.validateToken()\n提取 userId，注册 session
+Chat -> Browser: {"type":"connection","sessionId":"..."}
+Browser -> Browser: 心跳: __chat_ping__ 每 20s\n自动重连: 延迟 1.5s
+
+== 发起问答（前置检查）==
+
+User -> Browser: 输入问题
+Browser -> Browser: 创建 user 消息 + 空 assistant 消息\n(状态: pending)
+Browser -> Chat: WebSocket 发送问题文本
+Chat -> Chat: rateLimitService\n.checkChatByUser(userId)
+note right: Redis 滑动窗口\n超出限制返回 429
+
+Chat -> ConvSvc: getOrCreateSession\n(userId, conversationId)
+ConvSvc -> DB: INSERT / SELECT\nconversation_sessions\n(状态: ACTIVE)
+ConvSvc --> Chat: conversationId (含 title)
+
+Chat -> Redis: GET conversation:{id}\n(最近 20 条历史, TTL 7天)
+Redis --> Chat: 最近 N 条消息 (JSON)
+Chat -> Chat: generationStateService\n.createGeneration(...)
+
+Chat -> Browser: {"type":"start","generationId":"...","conversationId":"...","timestamp":...}
+Browser -> Browser: 更新 assistant 消息\n(status: loading)
+
+== ReAct 推理循环（最多 4 轮 / 8 次工具调用）==
+
+Chat -> Quota: reserveLlmUsage\n(userId, promptTokens, maxTokens)
+Quota --> Chat: TokenReservationBundle
+
+Chat -> LlmRouter: buildReActMessages\n(用户消息 + 历史 + 工具定义\n+ 反馈指导 + 知识库优先规则)
+LlmRouter -> LlmRouter: 从 model_provider_configs\n读取 active LLM provider\n(DeepSeek / Qwen / ZhipuAI)
+
+LlmRouter -> LlmRouter: POST /chat/completions\n(streaming, tool_choice=auto)
+note right: OpenAI 兼容协议\ntemperature=0.3\nmax_tokens=2000
+
+alt LLM 决定调用工具
+    LlmRouter --> Chat: ReActTurn:\ntoolCalls=[{id, name, arguments}]
+    Chat -> Browser: {"type":"tool_call","tool":"search_knowledge",\n"toolCallId":"...","status":"executing"}
+
+    Chat -> AgentTool: executeTool(name, arguments, userId)
+    AgentTool --> Chat: ToolExecutionResult\n(content + data)
+    Chat -> Browser: {"type":"tool_call","tool":"...",\n"status":"success"|"failed"}
+
+    Chat -> LlmRouter: 追加 assistant(tool_calls)\n+ tool 消息, 继续推理
+    note right: 最多循环 4 轮\n最多 8 次工具调用\n超时 120 秒
+else LLM 输出文本
+    LlmRouter --> Chat: 流式 SSE chunks\n(逐 token 回调)
+    Chat -> Browser: {"type":"chunk","chunk":"...",\n"generationId":"..."}
+    Browser --> User: 打字机效果逐字显示
+end
+
+Chat -> Quota: settleReservation\n(reservationId, actualTokens)
+
+== 工具: search_knowledge（知识库检索）==
+
+Chat -> AgentTool: executeTool\n("search_knowledge", {query, topK=5})
+AgentTool -> Search: searchWithPermission\n(query, userId, topK)
+
+Search -> Embedding: embed([query], userId)\n(UsageType.QUERY)
+Embedding --> Search: Float[2048] queryVector
+
+alt 向量生成成功
+    Search -> ES: KNN (k=topK×30, cosine, 权限过滤)\n+ keyword must-match (textContent)
+    Search -> ES: BM25 rescore\n(window=recallK, queryWeight=0.2,\nrescoreQueryWeight=1.0, AND)
+else 向量生成失败
+    Search -> ES: 纯 BM25 文本检索 (minScore=0.3)
+end
+
+ES --> Search: Top-K 结果\n(fileMd5, chunkId, score,\ntextContent, pageNumber)
+
+Search -> Search: 附加文件名 (从 MySQL file_upload)
+Search --> AgentTool: List<SearchResult>
+AgentTool -> AgentTool: 格式化: [1]..[N] 编号引用
+AgentTool --> Chat: ToolExecutionResult\n(编号上下文 + metadata)
+
+Chat -> Chat: buildReferenceMappings\n(ref# → {fileMd5, fileName,\npageNumber, retrievalMode, score})
+
+note over AgentTool, ES
+  <b>4 个 Agent Tools:</b>
+  · search_knowledge — 混合检索知识库
+  · generate_summary — 检索+LLM 摘要(流式)
+  · submit_feedback — 存储评分到 Redis Hash
+  · knowledge_stats — ES 统计 + MySQL 文档数
+end note
+
+== 流式生成与持久化 ==
+
+Chat -> Browser: 持续推送 {"type":"chunk","chunk":"..."}
+
+Chat -> DB: INSERT INTO conversations\n(userId, question, answer,\nconversationId, referenceMappingsJson)
+DB --> Chat: 持久化成功
+
+Chat -> Redis: SET conversation:{id} = 历史 JSON\nEXPIRE 604800 (7天)
+
+Chat -> Browser: {"type":"completion","status":"finished",\n"referenceMappings":{"1":{fileMd5, fileName,\npageNumber, retrievalMode, score,...}}}
+
+Browser -> Browser: 解析 markdown 引用模式\n"来源#N: 文件名 | 第X页"
+Browser --> User: 显示完整回答\n可点击引用来源 → 新标签页预览
+
+== 停止生成 ==
+
+User -> Browser: 点击"停止"按钮
+Browser -> Browser: GET /api/v1/chat/websocket-token\n(获取 cmdToken)
+Browser -> Chat: {"type":"stop","generationId":"...",\n"_internal_cmd_token":"WSS_STOP_CMD_..."}
+Chat -> Chat: cancelledGenerations\n.add(generationId)
+Chat -> LlmRouter: StreamHandle.cancel()\n(取消上游 SSE 订阅)
+Chat -> Browser: {"type":"stop","generationId":"...",\n"message":"响应已停止"}
+Chat -> Quota: settleReservation\n(部分用量结算)
+
+@enduml

@@ -1,0 +1,34 @@
+' ConversationService 类图
+@startuml ConversationService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ConversationService</b>" {
+    - conversationRepository: ConversationRepository
+    - sessionRepository: ConversationSessionRepository
+    - userRepository: UserRepository
+    - objectMapper: ObjectMapper
+    - redisTemplate: RedisTemplate
+    + recordConversation(username, question, answer): void
+    + recordConversation(userId, question, answer, conversationId, referenceMappings): void
+    + getConversationSessions(userId): List<Map<String, Object>>
+    + createConversationSession(userId): Map<String, Object>
+    + ensureConversationSession(userId, conversationId, title): void
+    + switchCurrentConversation(userId, conversationId): void
+    + updateSessionTitle(conversationId, title): void
+    + archiveConversationSession(conversationId): void
+    + unarchiveConversationSession(conversationId): void
+    + updateSessionTitleIfDefault(conversationId, title): void
+    + getMessagesByConversationId(conversationId): List<Map>
+    + getConversations(username, startDate, endDate): List<Conversation>
+    + getAllConversations(adminUsername, targetUsername, startDate, endDate): List<Conversation>
+    + toMessageHistory(conversations, includeUsername): List<Map>
+    - saveConversation(user, question, answer, conversationId, referenceMappings): void
+    - touchSessionUpdatedAt(conversationId): void
+    - buildMessage(role, content, timestamp, conversationId, referenceMappings, username): Map
+    - writeReferenceMappings(referenceMappings): String
+    - parseReferenceMappings(json): Map
+}
+@enduml

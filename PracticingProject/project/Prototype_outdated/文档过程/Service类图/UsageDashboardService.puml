@@ -1,0 +1,17 @@
+' UsageDashboardService 类图
+@startuml UsageDashboardService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UsageDashboardService</b>" {
+    - userRepository: UserRepository
+    - usageQuotaService: UsageQuotaService
+    + buildOverview(days: int): UsageOverview
+    - toRankingItem(user, snapshot, scope): UsageRankingItem
+    - buildAlerts(user, snapshot): List<UsageAlert>
+    - buildAlert(user, scope, quota): UsageAlert
+    - emptySnapshot(): UserUsageSnapshot
+}
+@enduml

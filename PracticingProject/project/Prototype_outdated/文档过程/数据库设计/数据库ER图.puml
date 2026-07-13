@@ -1,0 +1,192 @@
+' Group45 数据库 ER 图
+@startuml 数据库ER图
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+' ===== 用户与权限相关 =====
+
+entity "users (用户表)" as users {
+    * **id** : BIGINT <<PK>>
+    --
+    * **username** : VARCHAR(255) <<UQ>>
+    * **password** : VARCHAR(255)
+    * **role** : VARCHAR(255) <<USER|ADMIN>>
+    org_tags : VARCHAR(255)
+    primary_org : VARCHAR(255)
+    created_at : DATETIME(6)
+    updated_at : DATETIME(6)
+}
+
+entity "organization_tags\n(组织标签表)" as org_tags {
+    * **tag_id** : VARCHAR(255) <<PK>>
+    --
+    * **name** : VARCHAR(255)
+    description : TEXT
+    parent_tag : VARCHAR(255) <<FK→自引用>>
+    upload_max_size_bytes : BIGINT
+    * **created_by** : BIGINT <<FK→users.id>>
+    created_at : DATETIME(6)
+    updated_at : DATETIME(6)
+}
+
+' ===== 文件上传与向量化 =====
+
+entity "file_upload\n(文件上传记录表)" as file_upload {
+    * **id** : BIGINT <<PK>>
+    --
+    * **file_md5** : VARCHAR(32)
+    file_name : VARCHAR(255)
+    total_size : BIGINT
+    status : INT <<0=上传中 1=已完成 2=合并中>>
+    user_id : VARCHAR(64)
+    org_tag : VARCHAR(255)
+    is_public : BIT(1)
+    estimated_embedding_tokens : BIGINT
+    estimated_chunk_count : INT
+    actual_embedding_tokens : BIGINT
+    actual_chunk_count : INT
+    vectorization_status : VARCHAR(32)
+    vectorization_error_message : VARCHAR(1000)
+    created_at : DATETIME(6)
+    merged_at : DATETIME(6)
+    ==
+    <<UK (file_md5, user_id)>>
+}
+
+entity "chunk_info\n(上传分片信息表)" as chunk_info {
+    * **id** : BIGINT <<PK>>
+    --
+    * **file_md5** : VARCHAR(32)
+    * **chunk_index** : INT
+    chunk_md5 : VARCHAR(32)
+    storage_path : VARCHAR(255)
+    ==
+    <<UK (file_md5, chunk_index)>>
+}
+
+entity "document_vectors\n(文档向量元数据表)" as doc_vectors {
+    * **vector_id** : BIGINT <<PK>>
+    --
+    * **file_md5** : VARCHAR(32)
+    chunk_id : INT
+    text_content : LONGTEXT
+    page_number : INT
+    anchor_text : VARCHAR(512)
+    model_version : VARCHAR(32)
+    user_id : VARCHAR(64)
+    org_tag : VARCHAR(50)
+    is_public : BIT(1)
+}
+
+' ===== 对话相关 =====
+
+entity "conversation_sessions\n(对话会话表)" as convo_sessions {
+    * **id** : BIGINT <<PK>>
+    --
+    * **user_id** : BIGINT <<FK→users.id>>
+    * **conversation_id** : VARCHAR(64) <<UQ>>
+    title : VARCHAR(255)
+    status : VARCHAR(20) <<ACTIVE|ARCHIVED>>
+    created_at : DATETIME(6)
+    updated_at : DATETIME(6)
+}
+
+entity "conversations\n(对话记录表)" as conversations {
+    * **id** : BIGINT <<PK>>
+    --
+    * **user_id** : BIGINT <<FK→users.id>>
+    question : TEXT
+    answer : TEXT
+    conversation_id : VARCHAR(64)
+    reference_mappings_json : LONGTEXT
+    timestamp : DATETIME(6)
+}
+
+' ===== 统计与配额 =====
+
+entity "user_daily_chat_count\n(用户每日聊天次数表)" as daily_chat {
+    * **id** : BIGINT <<PK>>
+    --
+    * **user_id** : VARCHAR(50)
+    * **record_date** : DATE
+    chat_request_count : BIGINT
+    created_at : DATETIME(6)
+    updated_at : DATETIME(6)
+    ==
+    <<UK (user_id, record_date)>>
+}
+
+entity "user_token_record\n(用户Token变动记录表)" as token_record {
+    * **id** : BIGINT <<PK>>
+    --
+    * **user_id** : VARCHAR(255)
+    * **record_date** : DATE
+    token_type : VARCHAR(20) <<LLM|EMBEDDING>>
+    change_type : VARCHAR(20) <<INCREASE|CONSUME>>
+    amount : BIGINT
+    balance_before : BIGINT
+    balance_after : BIGINT
+    reason : VARCHAR(500)
+    remark : VARCHAR(500)
+    request_count : BIGINT
+    created_at : DATETIME(6)
+}
+
+' ===== 系统配置 =====
+
+entity "rate_limit_configs\n(限流配置表)" as rate_limit {
+    * **config_key** : VARCHAR(64) <<PK>>
+    --
+    single_max : INT
+    single_window_seconds : BIGINT
+    minute_max : BIGINT
+    minute_window_seconds : BIGINT
+    day_max : BIGINT
+    day_window_seconds : BIGINT
+    updated_by : VARCHAR(255)
+    created_at : DATETIME(6)
+    updated_at : DATETIME(6)
+}
+
+entity "model_provider_configs\n(模型供应商配置表)" as model_config {
+    * **id** : BIGINT <<PK>>
+    --
+    config_scope : VARCHAR(32) <<llm|embedding>>
+    provider_code : VARCHAR(64)
+    display_name : VARCHAR(128)
+    api_style : VARCHAR(64)
+    api_base_url : VARCHAR(512)
+    model_name : VARCHAR(255)
+    api_key_ciphertext : VARCHAR(2048)
+    embedding_dimension : INT
+    enabled : BIT(1)
+    active : BIT(1)
+    updated_by : VARCHAR(255)
+    created_at : DATETIME(6)
+    updated_at : DATETIME(6)
+    ==
+    <<UK (config_scope, provider_code)>>
+}
+
+' ===== 关系 =====
+
+users ||--o{ org_tags : "created_by\n1 : N"
+users ||--o{ file_upload : "user_id\n1 : N (逻辑关联)"
+users ||--o{ convo_sessions : "user_id\n1 : N"
+users ||--o{ conversations : "user_id\n1 : N"
+
+org_tags ||--o{ org_tags : "parent_tag\n自引用树形层级"
+
+file_upload ||--o{ chunk_info : "file_md5\n1 : N (逻辑关联)"
+file_upload ||--o{ doc_vectors : "file_md5\n1 : N (逻辑关联)"
+
+convo_sessions ||--o{ conversations : "conversation_id\n1 : N (逻辑关联)"
+
+users ||..o{ daily_chat : "user_id\n1 : N (逻辑关联)"
+users ||..o{ token_record : "user_id\n1 : N (逻辑关联)"
+
+@enduml

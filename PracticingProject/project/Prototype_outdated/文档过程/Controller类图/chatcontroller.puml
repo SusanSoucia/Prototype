@@ -1,0 +1,24 @@
+' ChatController 类图模板
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>ChatController</b>" {
+    - jwtUtils: JwtUtils
+    - chatGenerationStateService: ChatGenerationStateService 
+    - agentToolRegistry: AgentToolRegistry
+    + ChatController(jwtUtils: JwtUtils, chatGenerationStateService: ChatGenerationStateService, agentToolRegistry: AgentToolRegistry): ChatController
+    + getWebSocketToken(token: String): ApiResult
+    + getGeneration(generationId: String, token: String): ApiResult
+    + getActiveGeneration(token: String): ApiResult
+    + submitFeedback(token: String, request: FeedbackRequest): ApiResult
+    - buildFeedbackReason(request: FeedbackRequest): String
+    - appendReasonPart(reason: StringBuilder, part: String): void
+    - extractValidatedUserId(authorization: String): String
+    - responseBody(code: int, message: String, data: Object): Map<String, Object>
+}
+@enduml

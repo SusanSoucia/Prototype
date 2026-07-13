@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"SF Mono","Fira Code",monospace;background:#fff;padding:18px 24px;font-size:12px;line-height:1.5;color:#333}
+.root{font-weight:700;color:#1976D2;margin-bottom:4px}
+.dir{color:#E65100;font-weight:600}
+.file{color:#555}
+.tree ul{list-style:none;padding-left:16px;border-left:1px solid #ddd}
+.tree li{position:relative;padding:1px 0 1px 10px}
+.tree li::before{content:"";position:absolute;left:0;top:10px;width:8px;height:0;border-top:1px solid #ddd}
+.comment{color:#aaa;font-size:11px;margin-left:8px}
+.hdr{font-size:14px;font-weight:700;margin-bottom:10px;color:#222}
+</style></head><body>
+<div class="hdr">前端目录结构</div>
+<div class="root">frontend/</div>
+<ul class="tree">
+<li><span class="file">index.html</span><span class="comment">入口 HTML</span></li>
+<li><span class="file">package.json</span></li>
+<li><span class="dir">public/</span><span class="comment">静态资源</span></li>
+<li><span class="dir">build/</span>
+  <ul><li><span class="dir">config/</span></li><li><span class="dir">plugins/</span></li></ul></li>
+<li><span class="dir">mock/</span><span class="comment">Mock 数据</span></li>
+<li><span class="dir">packages/</span><span class="comment">本地子包</span>
+  <ul>
+  <li><span class="dir">alova/src/</span><span class="comment">请求客户端</span></li>
+  <li><span class="dir">axios/src/</span><span class="comment">HTTP 适配器</span></li>
+  <li><span class="dir">color/src/</span><span class="comment">主题色彩</span></li>
+  <li><span class="dir">hooks/src/</span><span class="comment">通用 Hooks</span></li>
+  <li><span class="dir">materials/src/</span><span class="comment">通用物料</span></li>
+  <li><span class="dir">utils/src/</span><span class="comment">工具函数</span></li>
+  </ul></li>
+<li><span class="dir">src/</span><span class="comment">主源码</span>
+  <ul>
+  <li><span class="file">main.js</span><span class="comment">应用入口</span></li>
+  <li><span class="file">App.vue</span><span class="comment">根组件</span></li>
+  <li><span class="dir">assets/</span><span class="comment">静态资源（图片/SVG）</span></li>
+  <li><span class="dir">components/</span><span class="comment">通用组件</span>
+    <ul><li><span class="dir">common/</span></li><li><span class="dir">advanced/</span></li><li><span class="dir">custom/</span></li></ul></li>
+  <li><span class="dir">constants/</span><span class="comment">常量定义</span></li>
+  <li><span class="dir">hooks/</span><span class="comment">组合式函数</span>
+    <ul><li><span class="dir">common/</span></li><li><span class="dir">business/</span></li></ul></li>
+  <li><span class="dir">layouts/</span><span class="comment">布局组件</span></li>
+  <li><span class="dir">locales/</span><span class="comment">国际化</span></li>
+  <li><span class="dir">plugins/</span><span class="comment">插件注册</span></li>
+  <li><span class="dir">router/</span><span class="comment">路由配置</span>
+    <ul><li><span class="dir">routes/</span></li><li><span class="dir">guard/</span></li><li><span class="dir">elegant/</span></li></ul></li>
+  <li><span class="dir">service/</span><span class="comment">API 服务</span>
+    <ul><li><span class="dir">api/</span></li><li><span class="dir">request/</span></li></ul></li>
+  <li><span class="dir">store/</span><span class="comment">状态管理</span></li>
+  <li><span class="dir">styles/</span><span class="comment">全局样式</span></li>
+  <li><span class="dir">theme/</span><span class="comment">主题配置</span></li>
+  <li><span class="dir">typings/</span><span class="comment">TypeScript 类型</span></li>
+  <li><span class="dir">utils/</span><span class="comment">工具函数</span></li>
+  <li><span class="dir">views/</span><span class="comment">业务页面</span>
+    <ul>
+    <li><span class="dir">_builtin/</span><span class="comment">内置页面（登录/错误）</span></li>
+    <li><span class="dir">chats/</span><span class="comment">对话交互</span></li>
+    <li><span class="dir">chat-history/</span><span class="comment">对话历史</span></li>
+    <li><span class="dir">knowledge-base/</span><span class="comment">知识库管理</span></li>
+    <li><span class="dir">org-tag/</span><span class="comment">组织标签管理</span></li>
+    <li><span class="dir">token-statistics/</span><span class="comment">Token 统计面板</span></li>
+    <li><span class="dir">user-management/</span><span class="comment">用户管理</span></li>
+    </ul></li>
+  </ul></li>
+</ul>
+</body></html>

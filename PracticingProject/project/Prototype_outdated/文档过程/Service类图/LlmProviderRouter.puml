@@ -1,0 +1,36 @@
+' LlmProviderRouter 类图
+@startuml LlmProviderRouter
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>LlmProviderRouter</b>" {
+    - aiProperties: AiProperties
+    - rateLimitService: RateLimitService
+    - usageQuotaService: UsageQuotaService
+    - modelProviderConfigService: ModelProviderConfigService
+    - objectMapper: ObjectMapper
+    + streamResponse(requesterId, userMessage, context, history, onChunk, onError, onComplete): StreamHandle
+    + buildReActMessages(userMessage, context, history): List<Map<String, Object>>
+    + buildReActMessages(userMessage, context, history, feedbackGuidance): List<Map<String, Object>>
+    + completeReActTurn(requesterId, messages, tools, maxCompletionTokens): ReActTurn
+    + streamReActTurn(requesterId, messages, tools, maxCompletionTokens, onChunk, onError, onComplete): StreamHandle
+    - buildClient(provider): WebClient
+    - logProviderError(message, error): void
+    - buildReActRequest(model, messages, tools, maxCompletionTokens, stream): Map
+    - buildRequest(model, userMessage, context, history): Map
+    - buildMessages(userMessage, context, history): List<Map>
+    - newMessage(role, content): Map
+    - limitText(text, maxChars): String
+    - buildOpenAiTools(tools): List<Map>
+    - estimateToolsTokens(tools): int
+    - estimateObjectMessagesTokens(messages): int
+    - parseReActTurn(responseBody, estimatedPromptTokens): ReActTurn
+    - processChunk(rawChunk, usageTracker, onChunk): void
+    - processReActStreamChunk(rawChunk, accumulator, onChunk): void
+    - extractPayloads(rawChunk): List<String>
+    - settleUsage(usageTracker): void
+    - settleReActStreamUsage(accumulator): void
+}
+@enduml

@@ -1,0 +1,23 @@
+' OrgTagCacheService 类图
+@startuml OrgTagCacheService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>OrgTagCacheService</b>" {
+    - redisTemplate: RedisTemplate<String, Object>
+    - organizationTagRepository: OrganizationTagRepository
+    + cacheUserOrgTags(username, orgTags): void
+    + getUserOrgTags(username): List<String>
+    + cacheUserPrimaryOrg(username, primaryOrg): void
+    + getUserPrimaryOrg(username): String
+    + deleteUserOrgTagsCache(username): void
+    + getUserEffectiveOrgTags(username): List<String>
+    + getDocumentAccessOrgTags(userTags): List<String>
+    + deleteUserEffectiveTagsCache(username): void
+    + invalidateAllEffectiveTagsCache(): void
+    - collectParentTags(tagId, result): void
+    - collectChildTags(tagId, result): void
+}
+@enduml

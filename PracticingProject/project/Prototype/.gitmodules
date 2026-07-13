@@ -1,0 +1,8 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/SusanSoucia/group45-frontend.git
+	branch = main
+[submodule "backend"]
+	path = backend
+	url = https://github.com/SusanSoucia/group45-backend.git
+	branch = refactor/backend-cleanup

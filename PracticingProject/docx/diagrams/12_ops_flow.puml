@@ -1,0 +1,67 @@
+@startuml
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName WenQuanYi Micro Hei
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam maxmessagesize 140
+skinparam ParticipantPadding 30
+skinparam BoxPadding 8
+
+title 企业RAG — 运维操作流程
+
+actor 运维人员 as Ops
+participant "launch.sh\n(应用管理)" as Launch
+participant "infra.sh\n(基础服务管理)" as Infra
+participant "Docker CLI\n(docker-compose)" as Docker
+collections "基础设施\nMySQL / Redis / ES\nKafka / MinIO" as InfraSvc
+
+== 1. 日常巡检 ==
+
+Ops -> Infra: ./infra.sh status
+Infra -> InfraSvc: curl ES _cluster/health
+InfraSvc --> Infra: green / yellow / red
+Infra -> InfraSvc: kafka-topics --list (topic + 积压)
+InfraSvc --> Infra: file-processing / vectorization
+Infra --> Ops: 各服务健康状态汇总
+
+Ops -> Docker: docker ps --format "table {{.Names}}\\n{{.Status}}"
+Docker --> Ops: 5 个容器运行状态
+
+Ops -> Launch: ./launch.sh status
+Launch --> Ops: 应用 PID + CPU/MEM + 最近日志
+
+== 2. 应用部署与回滚 ==
+
+Ops -> Launch: ./launch.sh start
+Launch -> Launch: git pull → mvn package -DskipTests
+Launch -> InfraSvc: kill 旧进程 (读取 pid.log)
+Launch -> Launch: 加载 .env 环境变量\njava -jar -Xms1g -Xmx1g
+Launch -> InfraSvc: 新进程监听 :8081
+Launch --> Ops: 编译 → 部署 → 启动完成
+
+Ops -> Launch: ./launch.sh restart (快速重启)
+Launch -> InfraSvc: kill 旧进程
+Launch -> Launch: 直接启动已有 jar
+Launch --> Ops: 重启完成，新 PID 已记录
+
+Ops -> Launch: ./launch.sh stop (回滚)
+Launch -> InfraSvc: kill 进程
+Launch --> Ops: 应用已停止
+
+== 3. 应急处置 ==
+
+Ops -> Docker: docker-compose restart <service>
+Docker -> InfraSvc: 停止容器 → 启动新容器
+Docker --> Ops: 容器重启完成
+
+Ops -> InfraSvc: curl -XPOST ES _forcemerge\n?only_expunge_deletes=true
+InfraSvc --> Ops: 索引碎片清理完成
+
+Ops -> InfraSvc: kafka-consumer-groups --reset-offsets\n--group file-processing-group --to-earliest
+InfraSvc --> Ops: 消费组重置，积压重新消费
+
+Ops -> InfraSvc: redis-cli INFO memory
+InfraSvc --> Ops: used_memory / maxmemory\n(超 80% 需清理或扩容)
+
+@enduml

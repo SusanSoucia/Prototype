@@ -1,0 +1,44 @@
+' ParseService 类图
+@startuml ParseService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ParseService</b>" {
+    - documentVectorRepository: DocumentVectorRepository
+    - usageQuotaService: UsageQuotaService
+    - objectMapper: ObjectMapper
+    - chunkSize: int
+    - overlapSize: int
+    - minChunkSize: int
+    - pdfParsingEngine: String
+    - liteParseCommand: String
+    - liteParseOcrEnabled: boolean
+    - liteParseOcrLanguage: String
+    - liteParseMaxPages: int
+    - liteParseDpi: int
+    - liteParseTimeoutSeconds: int
+    + parseAndSave(fileMd5, fileStream, userId, orgTag, isPublic): void
+    + parseAndSave(fileMd5, fileStream): void
+    + estimateEmbeddingUsage(fileStream): EmbeddingEstimate
+    - checkMemoryThreshold(): void
+    - parsePdfAndSave(fileMd5, fileStream, userId, orgTag, isPublic): void
+    - estimatePdfEmbeddingUsage(fileStream): EmbeddingEstimate
+    - parsePdfWithLiteParse(fileStream): List<LiteParsePage>
+    - buildLiteParseCommand(inputPath, outputPath): List<String>
+    - effectiveLiteParseOcrServerUrl(): String
+    - applyLiteParseEnvironment(processBuilder): void
+    - readLiteParsePages(outputPath): List<LiteParsePage>
+    - normalizeLiteParseText(text): String
+    - isPdfDocument(stream): boolean
+    - buildAnchorText(chunk): String
+    - splitTextIntoChunksWithSemantics(text, chunkSize): List<String>
+    - mergeSmallChunks(chunks, chunkSize): List<String>
+    - addSemanticOverlap(chunks, chunkSize): List<String>
+    - splitIntoSentenceUnits(text): List<String>
+    - tailByTokenBoundary(text, maxLength): String
+    - splitLongParagraph(paragraph, chunkSize): List<String>
+    - splitLongSentence(sentence, chunkSize): List<String>
+}
+@enduml

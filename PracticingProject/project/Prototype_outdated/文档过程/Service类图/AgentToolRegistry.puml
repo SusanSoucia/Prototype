@@ -1,0 +1,39 @@
+' AgentToolRegistry 类图
+@startuml AgentToolRegistry
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>AgentToolRegistry</b>" {
+    - hybridSearchService: HybridSearchService
+    - deepSeekClient: DeepSeekClient
+    - stringRedisTemplate: StringRedisTemplate
+    - elasticsearchClient: ElasticsearchClient
+    - fileUploadRepository: FileUploadRepository
+    + getTools(): List<AgentTool>
+    + getTool(name): Optional<AgentTool>
+    + executeTool(name, arguments, userId): ToolExecutionResult
+    + executeTool(name, arguments, userId, onChunk): ToolExecutionResult
+    - executeSearchKnowledge(arguments, userId, onChunk): ToolExecutionResult
+    - executeGenerateSummary(arguments, userId, onChunk): ToolExecutionResult
+    - executeSubmitFeedback(arguments, userId, onChunk): ToolExecutionResult
+    - executeKnowledgeStats(arguments, userId, onChunk): ToolExecutionResult
+    - searchKnowledgeTool(): AgentTool
+    - generateSummaryTool(): AgentTool
+    - submitFeedbackTool(): AgentTool
+    - knowledgeStatsTool(): AgentTool
+    - objectSchema(properties, required): Map
+    - stringSchema(description): Map
+    - integerSchema(description): Map
+    - formatSearchResults(results): String
+    - formatKnowledgeStats(data): String
+    - resolveLatestUpdatedAt(fileUpload): LocalDateTime
+    - getRequiredString(arguments, name): String
+    - getOptionalString(arguments, name): String
+    - getInt(arguments, name, defaultValue, min, max): int
+    - limitText(text, maxChars): String
+    - nullToDash(value): String
+    - requireUserId(userId): void
+}
+@enduml

@@ -1,0 +1,42 @@
+' Controller 类图设计总览 — 仅展示类名
+@startuml Controller类图设计总览
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+skinparam packageStyle rectangle
+skinparam packageBorderColor #333333
+skinparam packageFontStyle Bold
+
+left to right direction
+
+package "认证授权" #E8F5E9 {
+    class AuthController
+}
+
+package "用户管理" #E3F2FD {
+    class UserController
+    class AdminController
+}
+
+package "对话交互" #FFF3E0 {
+    class ChatController
+    class ConversationController
+    class ConversationSessionController
+}
+
+package "文档管理" #F3E5F5 {
+    class DocumentController
+    class UploadController
+    class ParseController
+    class SearchController
+}
+
+package "基础设施" #ECEFF1 {
+    class InternalOcrController
+}
+
+@enduml

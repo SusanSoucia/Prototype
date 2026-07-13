@@ -1,0 +1,22 @@
+' RateLimitService 类图
+@startuml RateLimitService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>RateLimitService</b>" {
+    - stringRedisTemplate: StringRedisTemplate
+    - properties: RateLimitProperties
+    - rateLimitConfigService: RateLimitConfigService
+    - usageQuotaService: UsageQuotaService
+    + checkRegisterByIp(ip): void
+    + checkLoginByIp(ip): void
+    + checkChatByUser(userId): void
+    + reserveLlmUsage(userId, estimatedPromptTokens, maxCompletionTokens): TokenReservationBundle
+    + checkEmbeddingQueryByUser(userId): void
+    + reserveEmbeddingUploadUsage(userId, texts): TokenReservationBundle
+    + reserveEmbeddingQueryUsage(userId, texts): TokenReservationBundle
+    - checkSingleWindow(key, max, windowSeconds, message): void
+}
+@enduml

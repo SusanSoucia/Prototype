@@ -1,0 +1,394 @@
+﻿G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:36:* 启动时导入内置知识库文档，确保新环境首次启动即可进行 RAG 问答�? */
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:90:logger.warn("启动知识库文档不存在，跳过导�? {}", documentPath);
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:102:logger.info("启动知识库文档已完成导入，跳过重复处�? fileName={}, fileMd5={}", fileName, fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:138:logger.warn("检测到重复的启动知识库文件记录，删除多余记�? fileName={}, fileMd5={}, duplicates={}",
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:166:logger.info("启动知识库文档数据不完整、元数据已变化或存在重复记录，准备重新导�? fileMd5={}, fileRecords={}, vectors={}, pageAwareVectors={}, esDocs={}",
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:199:logger.info("启动知识库文档导入完�? fileName={}, fileMd5={}", fileName, fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:236:logger.warn("清理启动知识�?MinIO 文件失败: fileMd5={}, error={}", fileMd5, e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:242:logger.warn("清理启动知识�?ES 数据失败: fileMd5={}, error={}", fileMd5, e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:248:logger.warn("清理启动知识库分块数据失�? fileMd5={}, error={}", fileMd5, e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\config\BootstrapKnowledgeInitializer.java:254:logger.warn("清理启动知识库文件记录失�? fileMd5={}, error={}", fileMd5, e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\config\KafkaConfig.java:83:// 可靠投递配�?        config.put(ProducerConfig.ACKS_CONFIG, "all"); // 全部 ISR 落盘才确�?        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true); // 幂等生产�?        config.put(ProducerConfig.RETRIES_CONFIG, 3); // 自动重试 3 �?
+G:\group45-backend\src\main\java\com\group45\backend\config\KafkaConfig.java:85:// 设置事务前缀，启用事务能�?        factory.setTransactionIdPrefix("file-upload-tx-");
+G:\group45-backend\src\main\java\com\group45\backend\config\KafkaConfig.java:97://        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false); // 禁用自动提交偏移�?        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+G:\group45-backend\src\main\java\com\group45\backend\config\KafkaConfig.java:110:// 当重试失败后，消息发送至 file-processing-dlt 主题，分区与原消息保持一�?        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(
+G:\group45-backend\src\main\java\com\group45\backend\config\KafkaConfig.java:114:// 固定退避策略：�?3 秒重试一次，最多重�?4 次（加首次共 5 次）
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:58:// �?downloadFileFromStorage 返回后立即检查流是否可读
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:60:throw new IOException("流为�?);
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:63:// 强制转换为可缓存�?            if (!fileStream.markSupported()) {
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:72:// 向量化处�?            VectorizationService.VectorizationUsageResult vectorizationResult = vectorizationService.vectorizeWithUsage(
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:84:// 抛出异常�?Kafka �?DefaultErrorHandler 捕获并触发重�?/ 死信
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:87:// 确保关闭输入�?            if (fileStream != null) {
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:111:* 模拟从存储系统下载文�?     *
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:112:* @param filePath 文件路径�?URL
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:113:* @return 文件输入�?     */
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:118:// 如果是文件系统路�?            File file = new File(filePath);
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:124:// 如果是远�?URL
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:130:connection.setConnectTimeout(30000); // 连接超时30�?                connection.setReadTimeout(180000);   // 读取超时时间3分钟
+G:\group45-backend\src\main\java\com\group45\backend\consumer\FileProcessingConsumer.java:152:return null; // 或者抛出异�?        }
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:30:* 文档控制器类，处理文档相关操作请�? */
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:66:LogUtils.logBusiness("DELETE_DOCUMENT", userId, "接收到删除文档请�? fileMd5=%s, role=%s", fileMd5, role);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:75:response.put("message", "文档不存�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:81:// 权限检查：只有文件所有者或管理员可以删�?            if (!file.getUserId().equals(userId) && !"ADMIN".equals(role)) {
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:84:monitor.end("删除失败：权限不�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:87:response.put("message", "没有权限删除此文�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:118:LogUtils.logBusiness("REINDEX_DOCUMENT", userId, "接收到重建文档索引请�? fileMd5=%s, role=%s", fileMd5, role);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:125:response.put("message", "文档不存�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:131:monitor.end("重建失败：权限不�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:134:response.put("message", "没有权限重建此文档索�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:178:"message", "文档不存�?
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:184:monitor.end("重试失败：权限不�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:205:LogUtils.logBusinessError("RETRY_VECTORIZATION_ASYNC", userId, "异步向量化重试失�? fileMd5=%s", e, fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:206:monitor.end("异步向量化重试失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:209:"message", "异步向量化重试失�? " + e.getMessage()
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:215:* 获取用户可访问的所有文件列�?     *
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:217:* @param orgTags 用户所属组织标�?     * @return 可访问的文件列表
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:235:LogUtils.logBusiness("GET_ACCESSIBLE_FILES", userId, "成功获取可访问文�? fileCount=%d", files.size());
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:236:monitor.end("获取可访问文件成�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:240:response.put("message", "获取可访问文件列表成�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:244:LogUtils.logBusinessError("GET_ACCESSIBLE_FILES", userId, "获取可访问文件失�?, e);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:245:monitor.end("获取可访问文件失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:248:response.put("message", "获取可访问文件列表失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:271:* 获取用户上传的所有文件列�?     *
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:273:* @return 用户上传的文件列�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:280:LogUtils.logBusiness("GET_USER_UPLOADED_FILES", userId, "接收到获取用户上传文件请�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:340:* 根据文件名下载文�?     *
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:341:* @param fileName 文件�?     * @param token JWT token
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:342:* @return 文件资源或错误响�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:351:// 验证token并获取用户信�?            RequestAuthContext authContext = resolveRequestAuthContext(authorization, token);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:355:LogUtils.logBusiness("DOWNLOAD_FILE_BY_NAME", userId != null ? userId : "anonymous", "接收到文件下载请�? fileName=%s", fileName);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:364:response.put("message", "文件不存在或需要登录访�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:402:response.put("message", "文件不存在或无权限访�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:413:monitor.end("下载失败：无法生成下载链�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:454:* @param fileName 文件�?     * @param fileMd5 文件MD5（可选，用于精确定位同名文件�?     * @param token JWT token (URL参数，用于向后兼�?
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:455:* @return 文件预览内容或错误响�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:466:// 验证token并获取用户信�?            RequestAuthContext authContext = resolveRequestAuthContext(authorization, token);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:471:"接收到文件预览请�? fileName=%s, fileMd5=%s, pageNumber=%s", fileName, fileMd5, pageNumber);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:498:response.put("message", "文件不存在或需要登录访�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:515:"预览响应已生�? fileMd5=%s, mode=%s, pageNumber=%s",
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:543:LogUtils.logBusiness("PREVIEW_FILE_BY_NAME", userId, "使用文件名找到文�? fileName=%s", fileName);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:552:response.put("message", "文件不存在或无权限访�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:562:monitor.end("预览失败：无法获取文件内�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:578:"预览响应已生�? fileMd5=%s, mode=%s, pageNumber=%s",
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:611:"接收�?PDF 单页预览请求: fileMd5=%s, pageNumber=%s", fileMd5, pageNumber);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:622:response.put("message", "文件不存在或无权限访�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:630:response.put("message", "仅支�?PDF 单页预览");
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:684:LogUtils.logBusiness("DOWNLOAD_FILE_BY_MD5", userId != null ? userId : "anonymous", "接收到文件下载请�? fileMd5=%s", fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:700:response.put("message", "文件不存在或无权限访�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:748:"接收到获取引用详情请�? sessionId=%s, referenceNumber=%s", sessionId, referenceNumber);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:752:monitor.end("未找到引用映�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\DocumentController.java:927:LogUtils.logBusiness("GET_ORG_TAG_NAME", "system", "找不到组织标�? tagId=%s", tagId);
+G:\group45-backend\src\main\java\com\group45\backend\controller\ParseController.java:24:"开始解析文�? fileMd5=%s, fileName=%s, fileSize=%d",
+G:\group45-backend\src\main\java\com\group45\backend\controller\ParseController.java:43:return ResponseEntity.badRequest().body("文档解析失败�? + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:65:* @param totalSize 文件总大�?     * @param fileName 文件�?     * @param totalChunks 总分片数�?     * @param orgTag 组织标签，如果未指定则使用用户的主组织标�?     * @param isPublic 是否公开，默认为false
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:67:* @return 返回包含已上传分片和上传进度的响�?     * @throws IOException 当文件读写发生错误时抛出
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:83:// 文件类型验证（仅在第一个分片时进行验证�?            if (chunkIndex == 0) {
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:107:LogUtils.logBusiness("UPLOAD_CHUNK", userId, "接收到分片上传请�? fileMd5=%s, chunkIndex=%d, fileName=%s, fileType=%s, contentType=%s, fileSize=%d, totalSize=%d, orgTag=%s, isPublic=%s",
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:110:// 如果未指定组织标签，则获取用户的主组织标�?            if (orgTag == null || orgTag.isEmpty()) {
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:112:LogUtils.logBusiness("UPLOAD_CHUNK", userId, "组织标签未指定，尝试获取用户主组织标�? fileName=%s", fileName);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:115:LogUtils.logBusiness("UPLOAD_CHUNK", userId, "成功获取用户主组织标�? fileName=%s, orgTag=%s", fileName, orgTag);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:117:LogUtils.logBusinessError("UPLOAD_CHUNK", userId, "获取用户主组织标签失�? fileName=%s", e, fileName);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:118:monitor.end("获取主组织标签失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:121:errorResponse.put("message", "获取用户主组织标签失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:139:errorResponse.put("message", "当前组织限制非管理员上传文件不超�?" + formatSize(uploadMaxSizeBytes)
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:191:* 获取文件上传状态接�?     *
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:193:* @return 返回包含已上传分片和上传进度的响�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:209:LogUtils.logBusiness("GET_UPLOAD_STATUS", "system", "获取文件信息失败，使用默认�? fileMd5=%s, 错误=%s", fileMd5, e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:212:LogUtils.logBusiness("GET_UPLOAD_STATUS", "system", "获取文件上传状�? fileMd5=%s, fileName=%s, fileType=%s", fileMd5, fileName, fileType);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:218:LogUtils.logBusiness("GET_UPLOAD_STATUS", "system", "文件上传状�? fileMd5=%s, fileName=%s, fileType=%s, 已上�?%d/%d, 进度=%.2f%%",
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:220:monitor.end("获取上传状态成�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:232:response.put("message", "获取上传状态成�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:237:LogUtils.logBusinessError("GET_UPLOAD_STATUS", "system", "获取文件上传状态失�? fileMd5=%s", e, fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:238:monitor.end("获取上传状态失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:241:errorResponse.put("message", "获取上传状态失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:251:* @return 返回包含合并后文件访问URL的响�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:260:LogUtils.logBusiness("MERGE_FILE", userId, "接收到合并文件请�? fileMd5=%s, fileName=%s, fileType=%s",
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:268:return new RuntimeException("文件记录不存�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:274:LogUtils.logBusiness("MERGE_FILE", userId, "权限验证失败: 尝试合并不属于自己的文件, fileMd5=%s, fileName=%s, 实际所有�?%s",
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:276:monitor.end("合并失败：权限不�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:279:errorResponse.put("message", "没有权限操作此文�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:284:LogUtils.logBusiness("MERGE_FILE", userId, "文件已完成合并，按幂等成功返�? fileMd5=%s, fileName=%s", request.fileMd5(), request.fileName());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:285:monitor.end("文件已完成合�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:290:throw new CustomException("文件正在合并中，请稍后重�?, HttpStatus.CONFLICT);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:293:LogUtils.logBusiness("MERGE_FILE", userId, "权限验证通过，开始合并文�? fileMd5=%s, fileName=%s, fileType=%s", request.fileMd5(), request.fileName(), fileType);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:295:// 检查分片是否全部上传完�?            List<Integer> uploadedChunks = uploadService.getUploadedChunks(request.fileMd5(), userId);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:297:LogUtils.logBusiness("MERGE_FILE", userId, "分片上传状�? fileMd5=%s, fileName=%s, 已上�?%d/%d",
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:316:.orElseThrow(() -> new RuntimeException("文件记录不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:319:monitor.end("文件已完成合�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:323:throw new CustomException("文件正在合并中，请稍后重�?, HttpStatus.CONFLICT);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:325:throw new CustomException("文件状态已变化，请刷新后重�?, HttpStatus.CONFLICT);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:329:.orElseThrow(() -> new RuntimeException("文件记录不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:332:LogUtils.logBusiness("MERGE_FILE", userId, "开始合并文件分�? fileMd5=%s, fileName=%s, fileType=%s, 分片数量=%d", request.fileMd5(), request.fileName(), fileType, totalChunks);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:343:.orElseThrow(() -> new RuntimeException("文件记录不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:397:LogUtils.logBusiness("MERGE_FILE", userId, "文件处理任务已发�? fileMd5=%s, fileName=%s, fileType=%s", request.fileMd5(), request.fileName(), fileType);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:443:response.put("message", "文件已完成合�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:452:* @param totalChunks 总分片数�?     * @return 返回上传进度的百分比
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:456:LogUtils.logBusiness("CALCULATE_PROGRESS", "system", "计算上传进度时总分片数�?");
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:474:* 合并请求的辅助类，包含文件的MD5值和文件�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:478:* 获取支持的文件类型列表接�?     *
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:479:* @return 返回支持的文件类型信�?     */
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:484:LogUtils.logBusiness("GET_SUPPORTED_TYPES", "system", "获取支持的文件类型列�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:493:data.put("description", "系统支持的文档类型文件，这些文件可以被解析并进行向量化处�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:498:response.put("message", "获取支持的文件类型成�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:501:LogUtils.logBusiness("GET_SUPPORTED_TYPES", "system", "成功返回支持的文件类�? 类型数量=%d, 扩展名数�?%d",
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:503:monitor.end("获取支持的文件类型成�?);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:507:LogUtils.logBusinessError("GET_SUPPORTED_TYPES", "system", "获取支持的文件类型失�?, e);
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:508:monitor.end("获取支持的文件类型失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:511:errorResponse.put("message", "获取支持的文件类型失�? " + e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:517:* 根据文件名获取文件类�?     *
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:518:* @param fileName 文件�?     * @return 文件类型
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:532:// 根据文件扩展名返回文件类�?        switch (extension) {
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:574:return "ZIP压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:576:return "RAR压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:578:return "7Z压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:580:return "TAR压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\controller\UploadController.java:582:return "GZ压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\model\ChunkInfo.java:8:* 它是一个实体类，与数据库中�?'chunk_info' 表对�? * 该类用来存储每个文件分块的元数据，包括分块的唯一标识、属于哪个文件、分块的顺序、分块的校验码和存储位置
+G:\group45-backend\src\main\java\com\group45\backend\model\ChunkInfo.java:18:* 分块信息的唯一标识�?     * 由数据库自动生成，用于唯一确定一个分块信�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\ChunkInfo.java:24:* 文件的MD5�?     * 用于标识一个文件，同一个文件的MD5值相同，不同文件的MD5值不�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\ChunkInfo.java:30:* 表示文件中的第几个分块，用于保持分块的顺�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\ChunkInfo.java:35:* 分块的MD5�?     * 每个分块的唯一标识，用于校验分块的完整性和正确�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\ChunkInfo.java:40:* 分块的存储路�?     * 表示分块在系统中的存储位置，可以是绝对路径或相对路径
+G:\group45-backend\src\main\java\com\group45\backend\model\DocumentVector.java:9:* 文档向量实体�? * 用于存储文本分块和相关元数据
+G:\group45-backend\src\main\java\com\group45\backend\model\DocumentVector.java:44:* 文件所属组织标�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileProcessingTask.java:8:* 文件处理任务类，用于Kafka消息传�? */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileProcessingTask.java:16:private String fileMd5; // 文件�?MD5 校验�?    private String filePath; // 文件存储路径
+G:\group45-backend\src\main\java\com\group45\backend\model\FileProcessingTask.java:17:private String fileName; // 文件�?    private String userId;   // 上传用户ID
+G:\group45-backend\src\main\java\com\group45\backend\model\FileProcessingTask.java:18:private String orgTag;   // 文件所属组织标�?    private boolean isPublic; // 文件是否公开
+G:\group45-backend\src\main\java\com\group45\backend\model\FileProcessingTask.java:20:private String requesterId; // 发起重试的用�?
+G:\group45-backend\src\main\java\com\group45\backend\model\FileProcessingTask.java:22:* 向后兼容的构造函�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:11:* 文件上传实体�? * 用于表示文件上传的相关信�? */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:28:* 文件的唯一标识�?     * 使用文件的MD5值来唯一确定一个文�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:37:* 文件的原始名�?     * 用于记录上传时文件的名称
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:42:* 文件的总大�?     * 以字节为单位记录文件的大�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:46:* 文件上传的状�?     * 0表示文件正在上传中，1表示文件上传已完成，2表示文件正在合并�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:47:private int status; // 0-上传�?1-已完�?2-合并�?
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:49:* 上传文件的用户的标识�?     * 用于记录哪个用户上传了文�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:54:* 文件所属组织标�?     * 用于标识文件归属的组织，支持基于组织标签的权限控�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:60:* true表示所有用户可访问，false表示仅组织内用户可访�?     */
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:83:* 文件上传的创建时�?     * 自动记录文件上传开始的时间
+G:\group45-backend\src\main\java\com\group45\backend\model\FileUpload.java:89:* 文件合并完成的时�?     * 当文件上传状态为已完成时，自动记录完成的时间
+G:\group45-backend\src\main\java\com\group45\backend\repository\DocumentVectorRepository.java:12:List<DocumentVector> findByFileMd5(String fileMd5); // 查询某文件的所有分�?
+G:\group45-backend\src\main\java\com\group45\backend\repository\DocumentVectorRepository.java:13:List<DocumentVector> findByFileMd5OrderByChunkIdAsc(String fileMd5); // 按分块顺序查询某文件的所有分�?
+G:\group45-backend\src\main\java\com\group45\backend\repository\DocumentVectorRepository.java:19:* 删除指定文件MD5的所有文档向量记�?     *
+G:\group45-backend\src\main\java\com\group45\backend\repository\FileUploadRepository.java:53:* 查询用户可访问的所有文件（考虑层级标签权限�?     * 包括�?. 用户自己上传的文�?     *      2. 公开的文�?     *      3. 用户所属组织的文件（包含层级关系）
+G:\group45-backend\src\main\java\com\group45\backend\repository\FileUploadRepository.java:56:* @param orgTagList 用户有效的组织标签列表（包含层级结构�?     * @return 用户可访问的文件列表
+G:\group45-backend\src\main\java\com\group45\backend\repository\FileUploadRepository.java:65:* @param orgTagList 用户所属的组织标签列表（逗号分隔�?     * @return 用户可访问的文件列表
+G:\group45-backend\src\main\java\com\group45\backend\repository\FileUploadRepository.java:71:* 查询用户自己上传的所有文�?     *
+G:\group45-backend\src\main\java\com\group45\backend\repository\FileUploadRepository.java:73:* @return 用户上传的文件列�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:43:* 文档管理服务�? * 负责文档的删除等管理操作
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:55:private static final String LEGACY_COMPLETED_WITHOUT_USAGE_MESSAGE = "历史数据未统计实�?Tokens，可按需重试以回写实际向量化结果";
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:110:logger.info("开始删除文�? {}", fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:115:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:122:logger.error("从Elasticsearch删除文档时出�? {}", fileMd5, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:126:// 2. 删除MinIO中的文件（使用MD5作为对象路径�?            try {
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:137:// 降级：尝试使用旧的文件名路径（兼容旧数据�?                try {
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:159:logger.error("删除文档向量记录时出�? {}", fileMd5, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:163:// 删除分片元数据，避免�?MD5 文件再次上传时误判分片已经存�?            try {
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:165:logger.info("成功删除文档分片元数�? fileMd5={}, deletedRows={}", fileMd5, deletedChunkRows);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:177:logger.error("删除文档过程中发生错�? {}", fileMd5, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:184:logger.info("开始重建文档索�? fileMd5={}, requesterId={}", fileMd5, requesterId);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:187:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:196:logger.warn("重建前清�?Elasticsearch 失败: fileMd5={}, error={}", fileMd5, e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:228:logger.error("重建文档索引失败，文档解析异�? {}", fileMd5, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:240:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:267:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:274:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:281:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:288:.orElseThrow(() -> new RuntimeException("文件不存�?));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:336:return "向量化失败，请稍后重�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:339:if ("向量化失�?.equals(deepestMessage) || "Error processing task".equals(deepestMessage)) {
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:340:return "向量化失败，请稍后重�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:348:return "向量化失败，请稍后重�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:354:* 获取用户可访问的所有文件列�?     * 包括用户自己的文件、公开文件和用户所属组织的文件（支持层级权限）
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:361:logger.info("获取用户可访问文件列�? userId={}", userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:379:// 查询用户可访问的所有文件（考虑层级标签�?                files = fileUploadRepository.findAccessibleFilesWithTags(userDbId, userEffectiveTags);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:384:logger.info("成功获取用户可访问文件列�? userId={}, fileCount={}", userId, files.size());
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:387:logger.error("获取用户可访问文件列表失�? userId={}", userId, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:388:throw new RuntimeException("获取可访问文件列表失�? " + e.getMessage(), e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:393:* 获取用户上传的所有文件列�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:395:* @return 用户上传的文件列�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:397:logger.info("获取用户上传的文件列�? userId={}", userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:403:logger.info("成功获取用户上传的文件列�? userId={}, fileCount={}", userId, files.size());
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:406:logger.error("获取用户上传的文件列表失�? userId={}", userId, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:407:throw new RuntimeException("获取用户上传的文件列表失�? " + e.getMessage(), e);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:415:.orElseThrow(() -> new RuntimeException("用户不存�? " + userId));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:418:.orElseThrow(() -> new RuntimeException("用户不存�? " + userId));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:446:logger.warn("检测到重复文件记录，列表返回前已合�? duplicateCount={}, uniqueCount={}",
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:555:.orElseThrow(() -> new RuntimeException("文件不存�? " + fileMd5));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:561:// 尝试使用新路径（MD5�?                String presignedUrl = minioClient.getPresignedObjectUrl(
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:569:logger.info("成功生成文件下载链接（新路径�? fileMd5={}, fileName={}, objectName={}",
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:572:// 使用 publicUrl 公开域名来替换原始域�?                presignedUrl = uploadService.transToPublicUrl(presignedUrl);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:576:// 降级：尝试使用旧的文件名路径（兼容旧数据�?                String oldObjectName = "merged/" + fileUpload.getFileName();
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:585:logger.info("成功生成文件下载链接（旧路径�? fileMd5={}, fileName={}, objectName={}",
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:600:* @param fileName 文件�?     * @return 文件预览内容，对于文本文件返回前几KB内容，非文本文件返回文件信息
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:608:.orElseThrow(() -> new RuntimeException("文件不存�? " + fileMd5));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:633:logger.info("成功获取文本文件预览内容: fileMd5={}, contentLength={}, 内容�?0字符={}",
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:640:"文件�? %s\n" +
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:644:"此文件类型不支持预览，请下载后查看�?,
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:651:logger.info("返回非文本文件信�? fileMd5={}", fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:682:.orElseThrow(() -> new RuntimeException("文件不存�? " + fileMd5));
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:711:* 获取文件扩展�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:740:logger.info("使用旧路径（文件名）获取文件�? fileMd5={}, objectName={}", fileUpload.getFileMd5(), oldObjectName);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:781:logger.info("未命�?PDF 单页预览缓存 key: cacheKey={}", cacheKey);
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:823:* 判断是否为文本文�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\DocumentService.java:836:* 格式化文件大�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:13:* 用于验证上传的文件类型是否支持解析和向量�? */
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:28:"txt",          // 纯文本文�?            "rtf",          // 富文本格�?            "md",           // Markdown文档
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:41:// 电子书格�?            "epub",         // EPUB电子�?
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:61:// 压缩�?            "zip", "rar", "7z", "tar", "gz", "bz2", "xz",
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:63:// 可执行文�?            "exe", "msi", "dmg", "pkg", "deb", "rpm",
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:71:// 数据库文�?            "db", "sqlite", "mdb", "accdb",
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:73:// 其他二进制文�?            "bin", "dat", "iso", "img"
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:79:* @param fileName 文件�?     * @return 验证结果
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:82:logger.debug("开始验证文件类�? fileName={}", fileName);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:86:return new FileTypeValidationResult(false, "文件名不能为�?, "unknown", null);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:89:// 提取文件扩展�?        String extension = extractFileExtension(fileName);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:91:logger.warn("无法提取文件扩展�? fileName={}", fileName);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:98:// 检查是否为支持的文档类�?        if (SUPPORTED_DOCUMENT_EXTENSIONS.contains(extension)) {
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:100:return new FileTypeValidationResult(true, "支持的文件类�?, fileType, extension);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:105:String message = String.format("不支持的文件类型�?s。系统仅支持文档类型文件的解析和向量�?, fileType);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:112:String message = String.format("未知的文件类型：%s。建议使用支持的文档格式（如PDF、Word、Excel、PowerPoint、文本文件等�?, fileType);
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:119:* 提取文件扩展�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:120:* @param fileName 文件�?     * @return 小写的文件扩展名，如果没有扩展名则返回null
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:136:* 根据文件扩展名获取文件类型描�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:137:* @param extension 文件扩展�?     * @return 文件类型描述
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:144:// 根据文件扩展名返回文件类�?        switch (extension.toLowerCase()) {
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:159:return "富文本文�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:178:return "EPUB电子�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:207:return "ZIP压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:209:return "RAR压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:211:return "7Z压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:218:* 获取支持的文件类型列表（用于前端显示�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:219:* @return 支持的文件类型描述列�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\FileTypeValidationService.java:238:* 文件类型验证结果�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:105:// 无需初始化，StandardTokenizer是静态方�?    }
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:108:* 以流式方式解析文件，将内容分块并保存到数据库，以避免OOM�?     * 采用"父文�?子切�?策略�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:114:* @throws IOException   如果文件读取过程中发生错�?     * @throws TikaException 如果文件解析过程中发生错�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:129:// 创建一个流式处理器，它会在内部处理父块的切分和子块的保�?            StreamingContentHandler handler = new StreamingContentHandler(fileMd5, userId, orgTag, isPublic);
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:134:// Tika的parse方法会驱动整个流式处理过�?            // 当handler的characters方法接收到足够数据时，会触发分块、切片和保存
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:154:logger.info("开始估算文�?Embedding Token");
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:184:logger.warn("内存使用率过�? {:.2f}%, 触发垃圾回收", memoryUsage * 100);
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:187:// 重新检�?            usedMemory = runtime.totalMemory() - runtime.freeMemory();
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:198:* 内部流式内容处理器，实现了父子文档切分策略的核心逻辑�?     * Tika解析器会调用characters方法，当累积的文本达�?父块"大小时，
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:199:* 就触发processParentChunk方法，进�?子切�?的生成和入库�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:209:super(-1); // 禁用Tika的内部写入限制，我们自己管理缓冲�?            this.fileMd5 = fileMd5;
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:233:logger.debug("处理父文本块，大�? {} bytes", parentChunkText.length());
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:285:* 将子切片列表保存到数据库�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:286:* @param fileMd5         文件�?MD5 哈希�?     * @param chunks          子切片文本列�?     * @param userId          上传用户ID
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:370:throw new IOException("启动 LiteParse 失败，请确认已安�?lit 命令或配�?file.parsing.liteparse.command: " + liteParseCommand, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:378:throw new IOException("等待 LiteParse 解析被中�?, e);
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:383:throw new IOException("LiteParse 解析超时: " + liteParseTimeoutSeconds + " �?);
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:600:return normalized.substring(0, maxLength) + "�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:604:* 智能文本分割，保持语义完整�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:619:// 按段落分�?        String[] paragraphs = text.split("\n\n+");
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:630:// 如果单个段落超过chunk大小，需要进一步分�?            if (paragraph.length() > chunkSize) {
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:825:logger.debug("HanLP overlap 边界处理失败，使用字符兜�? {}", e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:835:* 分割长段落，按句子边�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:839:// 按句子分�?        String[] sentences = paragraph.split("(?<=[。！？；])|(?<=[.!?;])\\s+");
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:850:// 如果单个句子太长，按词分�?                if (sentence.length() > chunkSize) {
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:881:// 如果添加这个词会超过chunk大小限制，且当前chunk不为�?                if (currentChunk.length() + word.length() > chunkSize && !currentChunk.isEmpty()) {
+G:\group45-backend\src\main\java\com\group45\backend\service\ParseService.java:893:logger.debug("HanLP智能分词成功，原文长�? {}, 分词�? {}, 分块�? {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:44:// 用于�?MinIO 服务器交�?    @Autowired
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:47:// 用于操作文件上传记录�?Repository
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:51:// 用于操作分片信息�?Repository
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:61:* @param fileMd5 文件�?MD5 值，用于唯一标识文件
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:62:* @param chunkIndex 分片索引，表示这是文件的第几个分�?     * @param totalSize 文件总大�?     * @param fileName 文件名称
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:65:* @param isPublic 是否公开，标识文件访问权�?     * @param userId 上传用户ID
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:74:logger.info("[uploadChunk] 开始处理分片上传请�?=> fileMd5: {}, chunkIndex: {}, totalSize: {}, fileName: {}, fileType: {}, contentType: {}, fileSize: {}, orgTag: {}, isPublic: {}, userId: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:79:logger.debug("检查文件记录是否存�?=> fileMd5: {}, fileName: {}, fileType: {}, status: {}", fileMd5, fileName, fileType, fileUpload.getStatus());
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:82:throw new CustomException("文件正在合并中，请稍后重�?, HttpStatus.CONFLICT);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:85:throw new CustomException("文件已完成合并，不允许继续上传分�?, HttpStatus.CONFLICT);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:90:// Redis Bitmap 是上传进度快路径；数据库 + MinIO 对象共同决定分片是否可用于合并�?            boolean chunkUploaded = isChunkUploaded(fileMd5, chunkIndex, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:96:logger.info("分片已在Redis中标记为已上传，按幂等成功处�?=> fileMd5: {}, fileName: {}, fileType: {}, chunkIndex: {}", fileMd5, fileName, fileType, chunkIndex);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:149:logger.info("分片信息已保存到数据�?=> fileMd5: {}, fileName: {}, chunkIndex: {}", fileMd5, fileName, chunkIndex);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:155:logger.error("分片上传过程中发生错�?=> fileMd5: {}, fileName: {}, fileType: {}, chunkIndex: {}, 错误类型: {}, 错误信息: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:157:throw e; // 重新抛出异常供上层处�?        }
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:161:* 根据文件名获取文件类�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:162:* @param fileName 文件�?     * @return 文件类型
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:176:// 根据文件扩展名返回文件类�?        switch (extension) {
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:218:return "ZIP压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:220:return "RAR压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:222:return "7Z压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:224:return "TAR压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:226:return "GZ压缩�?;
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:255:* 检查指定分片是否已上传（单个查询版本，性能较低�?     * 注意：对于批量查询建议使�?getUploadedChunks() 方法
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:257:* @param fileMd5 文件�?MD5 �?     * @param chunkIndex 分片索引
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:259:* @return 分片是否已上�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:264:logger.error("无效的分片索�?=> fileMd5: {}, chunkIndex: {}", fileMd5, chunkIndex);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:269:logger.debug("分片上传状�?=> fileMd5: {}, chunkIndex: {}, userId: {}, isUploaded: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:273:logger.error("检查分片上传状态失�?=> fileMd5: {}, chunkIndex: {}, userId: {}, 错误: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:275:return false; // 或者根据业务需求返回其他�?        }
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:281:* @param fileMd5 文件�?MD5 �?     * @param chunkIndex 分片索引
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:288:logger.error("无效的分片索�?=> fileMd5: {}, chunkIndex: {}", fileMd5, chunkIndex);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:293:logger.debug("分片已标记为已上�?=> fileMd5: {}, chunkIndex: {}, userId: {}", fileMd5, chunkIndex, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:302:* 删除文件所有分片上传标�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:303:* @param fileMd5 文件�?MD5 �?     * @param userId 用户ID
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:306:logger.debug("删除文件所有分片上传标�?=> fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:310:logger.info("文件分片上传标记已删�?=> fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:321:* @param fileMd5 文件�?MD5 �?     * @param userId 用户ID
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:325:logger.info("获取已上传分片列�?=> fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:332:logger.warn("文件总分片数�? => fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:336:// 优化：一次性获取所有分片状�?            String redisKey = "upload:" + userId + ":" + fileMd5;
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:342:logger.info("Redis中无分片状态记�?=> fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:346:logger.info("已从数据库回填Redis分片状�?=> fileMd5: {}, userId: {}, 已上传数�? {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:361:// 解析bitmap，找出已上传的分�?            for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:371:logger.info("Redis无有效分片位，已从数据库回填 => fileMd5: {}, userId: {}, 已上传数�? {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:378:logger.info("获取到已上传分片列表 => fileMd5: {}, userId: {}, 已上传数�? {}, 总分片数: {}, 优化方式: 一次性获�?,
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:382:logger.error("获取已上传分片列表失�?=> fileMd5: {}, userId: {}, 错误: {}", fileMd5, userId, e.getMessage(), e);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:388:logger.debug("从数据库查询已上传分片列�?=> fileMd5: {}", fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:415:* @param bitIndex 位索�?     * @return 指定位置是否�?
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:420:int bitPosition = 7 - (bitIndex % 8); // Redis bitmap的位顺序是从高位到低�?
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:422:return false; // 超出范围的位默认�?
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:427:logger.error("检查bitmap位状态失�?=> bitIndex: {}, 错误: {}", bitIndex, e.getMessage(), e);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:435:* @param fileMd5 文件�?MD5 �?     * @param userId 用户ID
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:444:logger.warn("文件记录不存在，无法计算分片�?=> fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:465:* @param fileMd5 文件�?MD5 �?     * @param chunkIndex 分片索引
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:466:* @param chunkMd5 分片�?MD5 �?     * @param storagePath 分片的存储路�?     */
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:478:logger.debug("分片信息已保�?=> fileMd5: {}, chunkIndex: {}", fileMd5, chunkIndex);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:480:logger.info("分片信息已存在，按幂等成功处�?=> fileMd5: {}, chunkIndex: {}", fileMd5, chunkIndex);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:489:* 合并所有分�?     *
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:490:* @param fileMd5 文件�?MD5 �?     * @param fileName 文件�?     * @param userId 用户ID
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:491:* @return 合成文件的访�?URL
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:495:logger.info("开始合并文件分�?=> fileMd5: {}, fileName: {}, fileType: {}, userId: {}", fileMd5, fileName, fileType, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:497:// 查询所有分片信�?            logger.debug("查询分片信息 => fileMd5: {}, fileName: {}", fileMd5, fileName);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:499:logger.info("查询到分片信�?=> fileMd5: {}, fileName: {}, fileType: {}, 分片数量: {}", fileMd5, fileName, fileType, chunks.size());
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:501:// 检查分片数量是否与预期一�?            int expectedChunks = getTotalChunks(fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:503:logger.error("分片数量不匹�?=> fileMd5: {}, fileName: {}, fileType: {}, 期望: {}, 实际: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:514:// 检查每个分片是否存�?            logger.info("开始检查每个分片是否存�?=> fileMd5: {}, fileName: {}, fileType: {}", fileMd5, fileName, fileType);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:535:logger.info("开始合并分�?=> fileMd5: {}, fileName: {}, fileType: {}, 合并后路�? {}", fileMd5, fileName, fileType, mergedPath);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:555:// 检查合并后的文�?                StatObjectResponse stat = minioClient.statObject(
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:564:logger.info("开始清理分片文�?=> fileMd5: {}, fileName: {}, 分片数量: {}", fileMd5, fileName, partPaths.size());
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:573:logger.debug("分片文件已删�?=> fileName: {}, path: {}", fileName, path);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:583:// 删除 Redis 中的分片状态记�?                logger.info("删除Redis中的分片状态记�?=> fileMd5: {}, fileName: {}, userId: {}", fileMd5, fileName, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:587:// 更新文件状�?                logger.info("更新文件状态为已完�?=> fileMd5: {}, fileName: {}, fileType: {}, userId: {}", fileMd5, fileName, fileType, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:590:logger.error("更新文件状态失败，文件记录不存�?=> fileMd5: {}, fileName: {}", fileMd5, fileName);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:591:return new RuntimeException("文件记录不存�? " + fileMd5);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:598:// 生成预签�?URL（有效期�?1 小时�?                logger.info("开始生成预签名URL => fileMd5: {}, fileName: {}, path: {}", fileMd5, fileName, mergedPath);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:600:logger.info("预签名URL已生�?=> fileMd5: {}, fileName: {}, fileType: {}, URL: {}", fileMd5, fileName, fileType, presignedUrl);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:609:logger.error("文件合并过程中发生错�?=> fileMd5: {}, fileName: {}, fileType: {}, 错误类型: {}, 错误信息: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:649:logger.warn("分片元数据存在但 MinIO 对象不可用，将重新上传分�?=> fileMd5: {}, fileName: {}, chunkIndex: {}, path: {}, error: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:659:logger.warn("已清理失效分片状�?=> fileMd5: {}, fileName: {}, chunkIndex: {}, deletedRows: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:666:logger.warn("Redis 标记存在但数据库分片元数据缺失，将重新上传分�?=> fileMd5: {}, fileName: {}, chunkIndex: {}",
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:731:logger.info("文件记录已存在，按幂等成功处�?=> fileMd5: {}, userId: {}", fileMd5, userId);
+G:\group45-backend\src\main\java\com\group45\backend\service\UploadService.java:733:.orElseThrow(() -> new RuntimeException("文件记录并发创建后查询失�?, e));
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:22:* 将旧路径（文件名）迁移到新路径（MD5�? *
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:23:* 使用方法�? * 1. �?Controller �?Service 中注入此工具
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:44:* 迁移所有文件从旧路径到新路�?     *
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:51:logger.info("开�?MinIO 文件迁移");
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:55:// 获取所有已完成上传的文�?            List<FileUpload> allFiles = fileUploadRepository.findAll();
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:56:logger.info("找到 {} 个文件记�?, allFiles.size());
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:69:logger.error("迁移过程中发生错�?, e);
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:92:// 2. 检查新路径是否已存�?            if (objectExists(newPath)) {
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:119:// 4. 删除旧路�?            logger.debug("  删除旧路�? {}", oldPath);
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:127:logger.info("  �?迁移成功");
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:131:logger.error("  �?迁移失败: {}", e.getMessage());
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:138:* 检查对象是否存�?     */
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:154:* 清空所有数据（危险操作，仅用于测试环境�?     */
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:157:logger.warn("开始清空所有数�?);
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:168:logger.info("�?ElasticSearch 已清�?);
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:170:// 2. 清空 MySQL �?            logger.info("清空 MySQL �?..");
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:172:logger.info("�?MySQL 表已清空");
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:199:logger.info("�?MinIO merged 目录已清�?);
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:206:logger.error("清空数据时出�?, e);
+G:\group45-backend\src\main\java\com\group45\backend\utils\MinioMigrationUtil.java:224:return errors.length() > 0 ? errors.toString() : "无错�?;

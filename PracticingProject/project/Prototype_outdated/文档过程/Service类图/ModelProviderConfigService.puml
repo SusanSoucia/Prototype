@@ -1,0 +1,48 @@
+' ModelProviderConfigService 类图
+@startuml ModelProviderConfigService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ModelProviderConfigService</b>" {
+    - repository: ModelProviderConfigRepository
+    - secretCryptoService: SecretCryptoService
+    - deepSeekApiUrl: String
+    - deepSeekApiKey: String
+    - deepSeekModel: String
+    - embeddingApiUrl: String
+    - embeddingApiKey: String
+    - embeddingModel: String
+    - embeddingDimension: Integer
+    + loadPersistedConfigs(): void
+    + getCurrentSettings(): ModelProviderSettingsView
+    + getActiveProvider(scope): ActiveProviderView
+    + updateScope(scope, request, updatedBy): ScopeSettingsView
+    + testConnection(scope, request): ConnectivityTestView
+    + reloadSettings(): void
+    + {static} normalizeOpenAiCompatibleBaseUrl(rawBaseUrl): String
+    - buildDefaultSettings(): ModelProviderSettingsView
+    - mergeOverrides(defaults, configs): ModelProviderSettingsView
+    - mergeScope(defaults, configs): ScopeSettingsView
+    - toActiveProvider(provider): ActiveProviderView
+    - resolveScopeByProvider(provider): String
+    - requiresEmbeddingReindex(current, target): boolean
+    - toProviderMap(providers): Map
+    - findProviderRequest(providers, provider): ProviderUpsertRequest
+    - validateUpdateRequest(scope, request): void
+    - validateConnectionTestRequest(scope, request): void
+    - resolveScope(scope, settings): ScopeSettingsView
+    - resolveProvider(scope, provider, settings): ProviderConfigView
+    - normalizeScope(scope): String
+    - normalizeProvider(provider): String
+    - normalizeOptionalProvider(provider): String
+    - resolveConnectionTestApiKey(scope, provider, rawApiKey): String
+    - formatConnectionFailure(provider, exception): String
+    - findResponseException(throwable): WebClientResponseException
+    - resolveProviderDisplayName(provider): String
+    - resolveCiphertext(rawApiKey, fallback): String
+    - requireNonBlank(candidate, fallback, message): String
+    - hasValue(value): boolean
+}
+@enduml

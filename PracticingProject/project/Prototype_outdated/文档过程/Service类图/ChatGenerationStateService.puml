@@ -1,0 +1,32 @@
+' ChatGenerationStateService 类图
+@startuml ChatGenerationStateService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ChatGenerationStateService</b>" {
+    - redisTemplate: RedisTemplate<String, String>
+    - objectMapper: ObjectMapper
+    + createGeneration(userId, conversationId, question): GenerationSnapshot
+    + appendChunk(generationId, chunk): void
+    + updateReferenceMappings(generationId, referenceMappings): void
+    + markCompleted(generationId, referenceMappings): void
+    + markFailed(generationId, errorMessage): void
+    + markCancelled(generationId): void
+    + getGeneration(generationId): Optional<GenerationSnapshot>
+    + getGenerationForUser(generationId, userId): Optional<GenerationSnapshot>
+    + getActiveGenerationForUser(userId): Optional<GenerationSnapshot>
+    - updateTerminalState(generationId, status, errorMessage, referenceMappings): void
+    - touch(generationId): void
+    - clearActiveGeneration(userId, generationId): void
+    - writeMeta(meta): void
+    - readMeta(generationId): GenerationMeta
+    - readReferenceMappings(generationId): Map
+    - toSnapshot(meta, content, referenceMappings): GenerationSnapshot
+    - metaKey(generationId): String
+    - contentKey(generationId): String
+    - referenceKey(generationId): String
+    - activeGenerationKey(userId): String
+}
+@enduml

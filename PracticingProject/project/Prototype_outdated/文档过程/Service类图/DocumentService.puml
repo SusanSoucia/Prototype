@@ -1,0 +1,53 @@
+' DocumentService 类图
+@startuml DocumentService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>DocumentService</b>" {
+    - fileUploadRepository: FileUploadRepository
+    - documentVectorRepository: DocumentVectorRepository
+    - chunkInfoRepository: ChunkInfoRepository
+    - minioClient: MinioClient
+    - elasticsearchService: ElasticsearchService
+    - orgTagCacheService: OrgTagCacheService
+    - userRepository: UserRepository
+    - organizationTagRepository: OrganizationTagRepository
+    - uploadService: UploadService
+    - stringRedisTemplate: StringRedisTemplate
+    - parseService: ParseService
+    - vectorizationService: VectorizationService
+    - kafkaTemplate: KafkaTemplate
+    - kafkaConfig: KafkaConfig
+    + deleteDocument(fileMd5, userId): void
+    + reindexDocument(fileMd5, requesterId): VectorizationUsageResult
+    + enqueueAsyncVectorizationRetry(fileMd5, requesterId): FileUpload
+    + markVectorizationProcessing(fileMd5, resetActualUsage): void
+    + markVectorizationCompleted(fileMd5, result): void
+    + markVectorizationFailed(fileMd5, errorMessage): void
+    + markVectorizationFailed(fileMd5, error): void
+    + getAccessibleFiles(userId, orgTags): List<FileUpload>
+    + updateDocumentOrgTag(fileMd5, orgTag): FileUpload
+    + updateDocumentVisibility(fileMd5, isPublic): FileUpload
+    + getUserUploadedFiles(userId): List<FileUpload>
+    + generateDownloadUrl(fileMd5): String
+    + generatePreviewUrl(fileMd5): String
+    + getFilePreviewContent(fileMd5, fileName): String
+    + getPdfSinglePagePreview(fileMd5, pageNumber): PdfSinglePagePreview
+    - syncDocumentPermissionMetadata(fileMd5, orgTag, isPublic): void
+    - parseOrgTags(orgTags): List<String>
+    - deduplicateFileUploads(files): List<FileUpload>
+    - generatePresignedObjectUrl(objectName, fileUpload, inline): String
+    - resolveResponseContentType(fileName): String
+    - buildContentDisposition(fileName, inline): String
+    - getFileExtension(fileName): String
+    - openFileStream(fileUpload): InputStream
+    - buildPdfSinglePageCacheKey(fileMd5, pageNumber): String
+    - getCachedPdfSinglePagePreview(cacheKey): byte[]
+    - cachePdfSinglePagePreview(cacheKey, previewBytes): void
+    - invalidatePdfSinglePagePreviewCache(fileMd5): void
+    - isTextFile(extension): boolean
+    - formatFileSize(size): String
+}
+@enduml

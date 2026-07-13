@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"SF Mono","Fira Code",monospace;background:#fff;padding:18px 24px;font-size:12px;line-height:1.5;color:#333}
+.root{font-weight:700;color:#1976D2;margin-bottom:4px}
+.dir{color:#E65100;font-weight:600}
+.file{color:#555}
+.tree ul{list-style:none;padding-left:16px;border-left:1px solid #ddd}
+.tree li{position:relative;padding:1px 0 1px 10px}
+.tree li::before{content:"";position:absolute;left:0;top:10px;width:8px;height:0;border-top:1px solid #ddd}
+.comment{color:#aaa;font-size:11px;margin-left:8px}
+.hdr{font-size:14px;font-weight:700;margin-bottom:10px;color:#222}
+</style></head><body>
+<div class="hdr">后端目录结构</div>
+<div class="root">com/group45/backend/</div>
+<ul class="tree">
+<li><span class="dir">client/</span><span class="comment">外部客户端 (ES/DeepSeek/MinIO/Embedding)</span></li>
+<li><span class="dir">config/</span><span class="comment">配置类 (Kafka/MinIO/CORS/Security/Redis)</span></li>
+<li><span class="dir">consumer/</span><span class="comment">Kafka 消息消费者</span></li>
+<li><span class="dir">controller/</span><span class="comment">REST 控制器层 (11个Controller)</span></li>
+<li><span class="dir">entity/</span><span class="comment">Elasticsearch 文档实体</span></li>
+<li><span class="dir">exception/</span><span class="comment">自定义异常</span></li>
+<li><span class="dir">handler/</span><span class="comment">WebSocket 处理器</span></li>
+<li><span class="dir">model/</span><span class="comment">JPA 实体 & DTO (17个)</span></li>
+<li><span class="dir">repository/</span><span class="comment">数据访问层 (Spring Data JPA)</span></li>
+<li><span class="dir">service/</span><span class="comment">业务逻辑层 (27个Service)</span></li>
+<li><span class="dir">test/</span><span class="comment">测试类</span></li>
+<li><span class="dir">utils/</span><span class="comment">工具类 (JWT/日志/密码加密)</span></li>
+</ul>
+<div style="margin-top:16px;font-size:11px;color:#666;">
+<p>resources/</p>
+<p style="margin-left:16px;">├── application.yml &nbsp;<span style="color:#aaa">主配置</span></p>
+<p style="margin-left:16px;">└── db/migration/ &nbsp;<span style="color:#aaa">数据库迁移脚本</span></p>
+</div>
+</body></html>

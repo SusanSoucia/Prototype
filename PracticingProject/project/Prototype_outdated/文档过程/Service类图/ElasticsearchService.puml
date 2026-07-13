@@ -1,0 +1,15 @@
+' ElasticsearchService 类图
+@startuml ElasticsearchService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ElasticsearchService</b>" {
+    - esClient: ElasticsearchClient
+    + bulkIndex(documents): void
+    + deleteByFileMd5(fileMd5): void
+    + countByFileMd5(fileMd5): long
+    + updatePermissionMetadataByFileMd5(fileMd5, orgTag, isPublic): void
+}
+@enduml

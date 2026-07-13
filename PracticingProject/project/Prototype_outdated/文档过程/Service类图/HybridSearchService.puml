@@ -1,0 +1,26 @@
+' HybridSearchService 类图
+@startuml HybridSearchService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>HybridSearchService</b>" {
+    - esClient: ElasticsearchClient
+    - embeddingClient: EmbeddingClient
+    - userRepository: UserRepository
+    - orgTagCacheService: OrgTagCacheService
+    - fileUploadRepository: FileUploadRepository
+    + searchWithPermission(query, userId, topK): List<SearchResult>
+    + search(query, topK): List<SearchResult>
+    - textOnlySearchWithPermission(query, accessContext, topK): List<SearchResult>
+    - textOnlySearch(query, topK): List<SearchResult>
+    - embedToVectorList(text, requesterId): List<Float>
+    - buildPermissionFilter(accessContext): Query
+    - canAccess(document, accessContext): boolean
+    - resolveAccessContext(userId): AccessContext
+    - resolveUser(userId): User
+    - parseOrgTags(orgTags): List<String>
+    - attachFileNames(results): void
+}
+@enduml

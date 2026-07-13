@@ -1,0 +1,19 @@
+' 类图模板
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>ConversationSessionController</b>" {
+    - jwtUtils: JwtUtils
+    - conversationService: ConversationService
+    + listSessions(token: String): ApiResult
+    + createSession(token: String): ApiResult
+    + archiveSession(token: String, conversationId: String): ApiResult
+    + switchSession(token: String, conversationId: String): ApiResult
+    + unarchiveSession(token: String, conversationId: String): ApiResult
+}
+@enduml

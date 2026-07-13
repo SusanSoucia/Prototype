@@ -1,0 +1,16 @@
+' InternalOcrController 类图模板
+@startuml InternalOcrController
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>InternalOcrController</b>" {
+    - liteParseOcrAdapterService: LiteParseOcrAdapterService
+    - aliyunOcrService: AliyunOcrService
+    + recognizeForLiteParse(file: MultipartFile, language: String, token: String): ApiResult
+    + aliyunOcrHealth(token: String): ApiResult
+}
+@enduml

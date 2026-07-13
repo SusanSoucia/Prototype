@@ -1,0 +1,13 @@
+' CustomUserDetailsService 类图
+@startuml CustomUserDetailsService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>CustomUserDetailsService</b>" {
+    - userRepository: UserRepository
+    + loadUserByUsername(username: String): UserDetails
+    - getAuthorities(role: User.Role): Collection<GrantedAuthority>
+}
+@enduml

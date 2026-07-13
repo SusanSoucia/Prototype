@@ -1,0 +1,34 @@
+' UploadService 类图
+@startuml UploadService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UploadService</b>" {
+    - redisTemplate: RedisTemplate
+    - minioClient: MinioClient
+    - fileUploadRepository: FileUploadRepository
+    - chunkInfoRepository: ChunkInfoRepository
+    - minioConfig: MinioConfig
+    + uploadChunk(fileMd5, chunkIndex, totalSize, fileName, file, orgTag, isPublic, userId): void
+    + isChunkUploaded(fileMd5, chunkIndex, userId): boolean
+    + markChunkUploaded(fileMd5, chunkIndex, userId): void
+    + deleteFileMark(fileMd5, userId): void
+    + getUploadedChunks(fileMd5, userId): List<Integer>
+    + getTotalChunks(fileMd5, userId): int
+    + mergeChunks(fileMd5, fileName, userId): String
+    + getMergedFileStream(fileMd5): GetObjectResponse
+    + generateMergedObjectUrl(fileMd5): String
+    + transToPublicUrl(minioUrl): String
+    - getFileType(fileName): String
+    - getUploadedChunksFromDatabase(fileMd5): List<Integer>
+    - backfillUploadedChunks(fileMd5, uploadedChunks, userId): void
+    - isBitSet(bitmapData, bitIndex): boolean
+    - saveChunkInfo(fileMd5, chunkIndex, chunkMd5, storagePath): void
+    - buildChunkStoragePath(fileMd5, chunkIndex): String
+    - chunkObjectExists(storagePath, fileMd5, fileName, chunkIndex): boolean
+    - clearStaleChunkState(fileMd5, chunkIndex, userId, fileName, storagePath): void
+    - getOrCreateFileUpload(fileMd5, totalSize, fileName, orgTag, isPublic, userId, fileType): FileUpload
+}
+@enduml

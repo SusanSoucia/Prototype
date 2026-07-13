@@ -1,0 +1,138 @@
+@startuml
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName WenQuanYi Micro Hei
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam maxmessagesize 140
+skinparam ParticipantPadding 30
+skinparam BoxPadding 8
+
+title 企业RAG — 管理员操作流程（已登录）
+
+actor 管理员 as Admin
+participant "Vue 3 前端\n(管理后台)" as Browser
+participant "AdminController" as Ctrl
+participant "UserService\n(用户与组织标签)" as UserSvc
+participant "DocumentService\n(文档管理)" as DocSvc
+participant "UsageDashboardService\n(Token 用量统计)" as DashSvc
+participant "UserTokenService\n(Token 充值审计)" as TokenSvc
+participant "ModelProvider\nConfigService" as ModelSvc
+participant "ConversationService\n(对话历史)" as ConvSvc
+database "MySQL\n(users / org_tags /\nmodel_config /\ntoken_record)" as DB
+database "Redis\n(配额 / 缓存)" as Redis
+collections "ES + MinIO" as Ext
+collections "Kafka\n(异步向量化队列)" as Kafka
+
+== 1. 用户与组织标签管理 ==
+
+Admin -> Browser: 访问用户管理页面
+Browser -> Ctrl: GET /api/v1/admin/users/list\n?keyword=&orgTag=&page=&size=
+Ctrl -> UserSvc: getPaginatedUserList(...)
+UserSvc -> DB: 分页查询 users 表
+UserSvc --> Ctrl: Page<UserDTO> (含 orgTags, role)
+Ctrl --> Browser: {code:200, data:{content:[...], totalElements: N}}
+
+Admin -> Browser: 分配 / 修改用户组织标签
+Browser -> Ctrl: PUT /api/v1/admin/users/{userId}/org-tags\n{orgTags: ["tag1", "tag2"]}
+Ctrl -> UserSvc: assignOrgTagsToUser(userId, tags)
+UserSvc -> DB: UPDATE users SET org_tags = ?
+UserSvc -> Redis: OrgTagCacheService\n刷新组织标签子树缓存
+Ctrl --> Browser: {code:200}
+Browser --> Admin: 提示更新成功
+
+Admin -> Browser: 管理组织标签树
+Browser -> Ctrl: GET /api/v1/admin/org-tags/tree
+Ctrl -> UserSvc: getOrganizationTagTree()
+UserSvc -> DB: 查询全量 org_tags，构建树
+Ctrl --> Browser: 层级组织标签树
+Browser -> Ctrl: POST|PUT|DELETE /api/v1/admin/org-tags\n{tagId, name, parentTag, uploadMaxSizeMb}
+Ctrl --> Browser: {code:200}
+
+== 2. 模型 Provider 配置 ==
+
+Admin -> Browser: 进入模型配置页
+Browser -> Ctrl: GET /api/v1/admin/model-providers
+Ctrl -> ModelSvc: getCurrentSettings()
+ModelSvc -> DB: SELECT * FROM model_provider_configs\nWHERE active=true (by scope)
+DB --> ModelSvc: llm: DeepSeek/Qwen/ZhipuAI\nembedding: DashScope/Zhipu
+Ctrl --> Browser: 当前配置 (API Key 脱敏)
+
+Admin -> Browser: 编辑某 scope 配置
+Browser -> Ctrl: PUT /api/v1/admin/model-providers/{scope}\n{providers: [{provider, model, apiBaseUrl, apiKey, active}]}
+Ctrl -> ModelSvc: updateScope(scope, request)
+ModelSvc -> ModelSvc: SecretCryptoService.encrypt(apiKey)\n→ 密文存储
+ModelSvc -> DB: UPSERT model_provider_configs\nSET active=true (唯一)
+ModelSvc --> Ctrl: 配置已生效 (即时切换)
+Ctrl --> Browser: {code:200}
+
+Admin -> Browser: 测试模型连接
+Browser -> Ctrl: POST /api/v1/admin/model-providers/{scope}/test\n{apiBaseUrl, apiKey, model}
+Ctrl -> ModelSvc: testConnection(scope, request)\n(发送最小化聊天请求)
+ModelSvc --> Ctrl: {success, latencyMs, errorMsg}
+Ctrl --> Browser: 测试结果
+
+== 3. Token 用量统计与充值 ==
+
+Admin -> Browser: 访问 Token 用量仪表盘\n(/token-statistics)
+Browser -> Ctrl: GET /api/v1/admin/usage/overview?days=7
+Ctrl -> DashSvc: buildOverview(days)
+DashSvc -> DB: 查询全部用户列表 (userRepository.findAll)
+DashSvc -> Redis: 批量读取每日配额计数\n(quota:llm / quota:embedding)
+DashSvc -> DashSvc: 计算: 今日用量, 7/30天趋势,\nTop-5 LLM 排名, Top-5 Embedding 排名,\n用量告警 (超 80% 阈值)
+DashSvc --> Ctrl: UsageOverview
+Ctrl --> Browser: 今日用量 + 趋势 + 排行 + 告警
+Browser --> Admin: 多部门、多时间维度\nLLM / Embedding 拆分展示
+
+Admin -> Browser: 为某用户追加 Token
+Browser -> Ctrl: POST /api/v1/admin/users/{userId}/tokens/add\n{llmToken, embeddingToken, reason}
+Ctrl -> TokenSvc: addLlmTokens / addEmbeddingTokens
+TokenSvc -> DB: INSERT INTO user_token_record\n(userId, tokenType, changeType=INCREASE,\namount, balanceBefore, balanceAfter,\nreason, remark="admin={username}")
+TokenSvc -> Redis: INCR user:token:llm:{userId}\nINCR user:token:embedding:{userId}
+TokenSvc --> Ctrl: 充值成功
+Ctrl --> Browser: {code:200, data:{usage:{llmUsed, llmBalance, embeddingUsed, embeddingBalance}}}
+Browser --> Admin: 新余额已生效
+
+== 4. 文档管理 ==
+
+Admin -> Browser: 设置文档可见性
+Browser -> Ctrl: PUT /api/v1/admin/documents/{fileMd5}/visibility\n{isPublic: true|false}
+Ctrl -> DocSvc: updateDocumentVisibility(fileMd5, isPublic)
+DocSvc -> DB: UPDATE file_upload SET is_public = ?
+DocSvc -> Ext: ES 索引更新 isPublic 字段
+Ctrl --> Browser: {code:200}
+
+Admin -> Browser: 编辑文档组织标签
+Browser -> Ctrl: PUT /api/v1/admin/documents/{fileMd5}/org-tag\n{orgTag: "tagId"}
+Ctrl -> DocSvc: updateDocumentOrgTag(fileMd5, orgTag)
+DocSvc -> DB: UPDATE file_upload SET org_tag = ?
+DocSvc -> Ext: ES 索引更新 orgTag 字段
+Ctrl --> Browser: {code:200}
+
+Admin -> Browser: 重试向量化
+Browser -> Ctrl: POST /api/v1/documents/{fileMd5}/vectorization/retry
+Ctrl -> DocSvc: enqueueAsyncVectorizationRetry(fileMd5, userId)
+DocSvc -> Kafka: 发送 FileProcessingTask
+Kafka -> Kafka: FileProcessingConsumer\n异步下载 → 重新切分 → 重新向量化
+DocSvc --> Ctrl: {code:200, data:{vectorizationStatus:"PENDING"}}
+
+Admin -> Browser: 删除 / 重索引文档
+Browser -> Ctrl: DELETE /api/v1/documents/{fileMd5}\n或 POST /api/v1/documents/{fileMd5}/reindex
+Ctrl -> DocSvc: deleteDocument / reindexDocument
+DocSvc -> Ext: ES 删除索引 / 重建\nMinIO 删除文件 / 保留
+DocSvc -> DB: 删除 document_vectors\n/ chunk_info / file_upload 记录
+Ctrl --> Browser: {code:200}
+Browser --> Admin: 操作完成
+
+== 5. 对话历史查看 ==
+
+Admin -> Browser: 进入对话历史页面 (/chat-history)
+Browser -> Ctrl: GET /api/v1/admin/conversation\n?userid=&start_date=&end_date=
+Ctrl -> ConvSvc: getAllConversations\n(adminUsername, targetUsername, startDate, endDate)
+ConvSvc -> DB: SELECT * FROM conversations\n(含日期范围 + 用户过滤)
+DB --> ConvSvc: 对话记录 (username, question,\nanswer, referenceMappingsJson)
+ConvSvc --> Ctrl: 全量对话列表
+Ctrl --> Browser: {code:200, data:[...]}
+Browser --> Admin: 展示: 可按 username,\nconversationId, 日期范围筛选\n含引用来源映射
+
+@enduml

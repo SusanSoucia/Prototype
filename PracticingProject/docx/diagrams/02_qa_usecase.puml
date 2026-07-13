@@ -1,0 +1,103 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam actorBackgroundColor #E3F2FD
+skinparam actorBorderColor #1565C0
+skinparam usecaseBackgroundColor #E8F5E9
+skinparam usecaseBorderColor #2E7D32
+skinparam packageBorderThickness 2
+skinparam defaultFontSize 12
+
+title 企业知识库 RAG 问答系统 — 用户问答用例图
+
+left to right direction
+
+'
+' ACTORS
+'
+actor "普通用户" as User #E3F2FD
+actor "管理员" as Admin #FFF3E0
+
+'
+' MAIN USE CASES
+'
+package "用户问答子系统" #E8F5E9 {
+
+    usecase "输入自然语言问题" as UC_Ask
+    usecase "查看 AI 生成的回答\n（流式打字机效果）" as UC_ViewAnswer
+    usecase "查看回答引用来源\n（原文片段溯源）" as UC_ViewSource
+    usecase "预览引用来源文档" as UC_PreviewDoc
+    usecase "对回答质量进行反馈\n（赞/踩）" as UC_Feedback
+    usecase "停止正在生成的回答" as UC_Stop
+    usecase "切换历史对话" as UC_SwitchConv
+    usecase "创建新对话" as UC_NewConv
+    usecase "归档/删除对话" as UC_ArchiveConv
+    usecase "混合搜索知识库\n（KNN + BM25）" as UC_Search
+
+}
+
+'
+' ADMIN ONLY USE CASES
+'
+package "管理功能" #FFF3E0 {
+
+    usecase "查看所有用户\n问答记录" as UC_ViewAll
+    usecase "查看使用统计数据\n（Token 消耗等）" as UC_Stats
+    usecase "配置模型 Provider" as UC_ConfigModel
+    usecase "管理用户 Token 配额" as UC_ManageQuota
+
+}
+
+'
+' EXTERNAL SYSTEM
+'
+actor "DeepSeek LLM\n(外部 AI 服务)" as LLM #E0F7FA
+actor "Elasticsearch\n(检索引擎)" as ES #FFF8E1
+
+'
+' RELATIONSHIPS
+'
+User --> UC_Ask
+User --> UC_ViewAnswer
+User --> UC_ViewSource
+User --> UC_PreviewDoc
+User --> UC_Feedback
+User --> UC_Stop
+User --> UC_SwitchConv
+User --> UC_NewConv
+User --> UC_ArchiveConv
+User --> UC_Search
+
+Admin --> User
+
+Admin --> UC_ViewAll
+Admin --> UC_Stats
+Admin --> UC_ConfigModel
+Admin --> UC_ManageQuota
+
+' Include relationships
+UC_Ask ..> UC_ViewAnswer : <<include>>
+UC_ViewAnswer ..> UC_ViewSource : <<include>>
+UC_ViewSource ..> UC_PreviewDoc : <<extend>>
+UC_ViewAnswer ..> UC_Stop : <<extend>>
+UC_Feedback ..> UC_ViewAnswer : <<extend>>
+UC_Search ..> UC_ViewSource : <<extend>>
+
+' System interactions
+UC_Ask ..> LLM : <<use>>
+UC_Ask ..> ES : <<use>>
+UC_ViewAnswer ..> LLM : <<use>>
+
+note top of UC_Ask
+  <b>核心用例</b>
+  用户通过 WebSocket 提交自然语言问题，
+  系统经过 ReAct Agent 循环
+  （检索+推理+生成）后
+  流式返回带引用的回答。
+end note
+
+note right of UC_ViewSource
+  点击 "来源 #1: 差旅制度2025.pdf"
+  跳转原文片段预览
+end note
+
+@enduml

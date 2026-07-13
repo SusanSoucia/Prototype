@@ -1,0 +1,116 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+skinparam packageBorderThickness 2
+skinparam arrowColor #333333
+skinparam defaultFontSize 12
+
+title 企业RAG系统模块结构图
+
+'
+' TOP LAYER
+'
+package "用户 / 浏览器" as Browser_Layer #E3F2FD {
+    component "Vue 3 前端 (Naive UI + TypeScript)" as Frontend #BBDEFB
+}
+
+'
+' MIDDLE LAYER
+'
+package "【M1】Spring Boot 应用层" as M1_Layer #E8F5E9 {
+
+    package "Controller 层" as ControllerLayer #C8E6C9 {
+        component "Upload Controller" as UploadCtrl
+        component "Document Controller" as DocCtrl
+        component "Chat Controller" as ChatCtrl
+        component "Search Controller" as SearchCtrl
+        component "Admin/User Controller" as AdminCtrl
+    }
+
+    package "Service 层（业务逻辑）" as ServiceLayer #A5D6A7 {
+        component "UploadService" as UpSvc
+        component "DocumentService" as DocSvc
+        component "ChatHandler" as ChatHdlr
+        component "HybridSearchService" as HybridSvc
+        component "ParseService" as ParseSvc
+        component "VectorizationService" as VecSvc
+        component "AgentToolRegistry" as AgentReg
+        component "UserService" as UserSvc
+        component "ConversationService" as ConvSvc
+        component "RateLimitService" as RateSvc
+    }
+
+    UploadCtrl -[hidden]right-> DocCtrl
+    DocCtrl -[hidden]right-> ChatCtrl
+    ChatCtrl -[hidden]right-> SearchCtrl
+    SearchCtrl -[hidden]right-> AdminCtrl
+
+    UpSvc -[hidden]right-> DocSvc
+    DocSvc -[hidden]right-> ChatHdlr
+    ChatHdlr -[hidden]right-> HybridSvc
+    HybridSvc -[hidden]right-> ParseSvc
+    ParseSvc -[hidden]right-> VecSvc
+    VecSvc -[hidden]right-> AgentReg
+    AgentReg -[hidden]right-> UserSvc
+    UserSvc -[hidden]right-> ConvSvc
+    ConvSvc -[hidden]right-> RateSvc
+
+    UploadCtrl --> UpSvc
+    DocCtrl --> DocSvc
+    ChatCtrl --> ChatHdlr
+    SearchCtrl --> HybridSvc
+    AdminCtrl --> UserSvc
+}
+
+'
+' BOTTOM LAYER
+'
+package "外部软件/服务层" as Ext_Layer #FFF3E0 {
+
+    component "【M2】DeepSeek LLM API" as M2 #B2EBF2
+    component "【M3】DashScope Embedding" as M3 #B2EBF2
+
+    database "【M4】Elasticsearch 8.10" as M4 #FFE082
+    database "【M5】MySQL 8.0" as M5 #FFE082
+    database "【M6】Redis 7.0" as M6 #FFE082
+    queue "【M7】Kafka 3.2" as M7 #FFE082
+
+    database "【M8】MinIO 对象存储" as M8 #E1BEE7
+
+    component "【M9】LiteParse PDF解析" as M9 #C5CAE9
+    component "【M10】Apache Tika 通用解析" as M10 #C5CAE9
+    component "【M11】HanLP 中文分词" as M11 #C5CAE9
+
+    M2 -[hidden]right-> M3
+    M3 -[hidden]right-> M4
+    M4 -[hidden]right-> M5
+    M5 -[hidden]right-> M6
+    M6 -[hidden]right-> M7
+    M7 -[hidden]right-> M8
+    M8 -[hidden]right-> M9
+    M9 -[hidden]right-> M10
+    M10 -[hidden]right-> M11
+}
+
+'
+' VERTICAL FLOW
+'
+Frontend -down-> UploadCtrl : HTTP REST
+Frontend -down-> ChatCtrl : WebSocket
+Frontend -down-> DocCtrl : 分片上传
+Frontend -down-> AdminCtrl : JWT Auth
+
+ServiceLayer -down-> Ext_Layer : 调用编排
+
+'
+' FORCE VERTICAL ALIGNMENT
+'
+Browser_Layer -[hidden]down-> M1_Layer
+M1_Layer -[hidden]down-> Ext_Layer
+
+note bottom of Ext_Layer
+  M2-M3 AI云服务  |  M4-M7 数据中间件  |  M8 对象存储  |  M9-M11 文档解析
+  全部由 M1 Service 层统一调用编排
+end note
+
+@enduml

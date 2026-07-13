@@ -1,0 +1,14 @@
+' SearchController 类图模板
+@startuml SearchController
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>SearchController</b>" {
+    - hybridSearchService: HybridSearchService
+    + hybridSearch(query: String, topK: int, userId: String): ApiResult
+}
+@enduml

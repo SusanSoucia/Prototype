@@ -1,0 +1,15 @@
+' ChatSessionRegistry 类图
+@startuml ChatSessionRegistry
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ChatSessionRegistry</b>" {
+    - objectMapper: ObjectMapper
+    + registerSession(userId, session): void
+    + unregisterSession(userId, session): void
+    + getCurrentSession(userId): WebSocketSession
+    + sendJsonToUser(userId, payload): void
+}
+@enduml

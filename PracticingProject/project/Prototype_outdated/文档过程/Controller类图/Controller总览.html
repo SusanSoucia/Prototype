@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f7f7f7;padding:24px}
+h1{text-align:center;font-size:18px;margin-bottom:16px;color:#222}
+.row{display:flex;gap:10px;margin-bottom:10px;align-items:stretch}
+.label{width:72px;min-width:72px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;border-radius:6px;writing-mode:vertical-lr;letter-spacing:2px;padding:8px 0}
+.label.auth{background:#4CAF50}
+.label.user{background:#2196F3}
+.label.chat{background:#FF9800}
+.label.doc{background:#9C27B0}
+.label.infra{background:#607D8B}
+.cards{display:flex;gap:10px;flex-wrap:wrap;flex:1}
+.card{background:#fff;border-radius:6px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.07);border-left:3px solid #ccc;min-width:170px}
+.card.auth{border-left-color:#4CAF50}
+.card.user{border-left-color:#2196F3}
+.card.chat{border-left-color:#FF9800}
+.card.doc{border-left-color:#9C27B0}
+.card.infra{border-left-color:#607D8B}
+.card .path{font-size:10px;color:#aaa;margin-bottom:2px;font-family:monospace}
+.card .name{font-size:13px;font-weight:700;color:#333}
+.count{text-align:center;font-size:11px;color:#999;margin-top:4px}
+</style>
+</head>
+<body>
+<h1>Controller 总览 &nbsp;·&nbsp; 共 11 个</h1>
+
+<div class="row">
+  <div class="label auth">认证授权</div>
+  <div class="cards">
+    <div class="card auth"><div class="path">/api/v1/auth</div><div class="name">AuthController</div></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label user">用户管理</div>
+  <div class="cards">
+    <div class="card user"><div class="path">/api/v1/users</div><div class="name">UserController</div></div>
+    <div class="card user"><div class="path">/api/v1/admin</div><div class="name">AdminController</div></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label chat">对话交互</div>
+  <div class="cards">
+    <div class="card chat"><div class="path">/api/v1/chat</div><div class="name">ChatController</div></div>
+    <div class="card chat"><div class="path">/api/v1/users/conversation</div><div class="name">ConversationController</div></div>
+    <div class="card chat"><div class="path">/api/v1/users/conversations</div><div class="name">ConversationSessionController</div></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label doc">文档管理</div>
+  <div class="cards">
+    <div class="card doc"><div class="path">/api/v1/documents</div><div class="name">DocumentController</div></div>
+    <div class="card doc"><div class="path">/api/v1/upload</div><div class="name">UploadController</div></div>
+    <div class="card doc"><div class="path">/api/v1/parse</div><div class="name">ParseController</div></div>
+    <div class="card doc"><div class="path">/api/v1/search</div><div class="name">SearchController</div></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label infra">基础设施</div>
+  <div class="cards">
+    <div class="card infra"><div class="path">/api/v1/internal/ocr</div><div class="name">InternalOcrController</div></div>
+  </div>
+</div>
+
+</body>
+</html>

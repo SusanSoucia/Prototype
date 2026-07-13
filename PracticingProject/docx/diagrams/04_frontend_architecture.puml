@@ -1,0 +1,73 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+title 企业RAG Frontend Architecture
+
+component App
+component BaseLayout
+component BlankLayout
+
+App --> BaseLayout
+App --> BlankLayout
+
+component GlobalHeader
+component GlobalSider
+component GlobalTab
+component GlobalContent
+component GlobalFooter
+
+BaseLayout --> GlobalHeader
+BaseLayout --> GlobalSider
+BaseLayout --> GlobalTab
+BaseLayout --> GlobalContent
+BaseLayout --> GlobalFooter
+
+component ChatPage
+component KnowledgeBasePage
+component UserPage
+component ModelProviderPage
+component UsageMonitorPage
+component LoginPage
+
+component ChatMessage
+component ChatInput
+component ConversationSidebar
+
+ChatPage --> ChatMessage
+ChatPage --> ChatInput
+ChatPage --> ConversationSidebar
+
+component UploadDialog
+component SearchDialog
+
+KnowledgeBasePage --> UploadDialog
+KnowledgeBasePage --> SearchDialog
+
+component authStore
+component chatStore
+component kbStore
+component routeStore
+component themeStore
+
+ChatPage --> chatStore
+KnowledgeBasePage --> kbStore
+LoginPage --> authStore
+
+component axiosClient
+component apiAuth
+component apiKnowledge
+component apiChat
+
+axiosClient --> apiAuth
+axiosClient --> apiKnowledge
+axiosClient --> apiChat
+
+note right of axiosClient
+  Request chain:
+  axios -> JWT header
+  -> send -> intercept 401
+  -> show login dialog
+end note
+
+@enduml

@@ -1,0 +1,15 @@
+' UsageBalanceDashboardService 类图
+@startuml UsageBalanceDashboardService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UsageBalanceDashboardService</b>" {
+    - userTokenService: UserTokenService
+    + buildOverview(days: int): UsageOverview
+    - buildRankingItem(consumer, scope): UsageRankingItem
+    - buildTokenAlerts(tokenType): List<UsageAlert>
+}
+note right: extends UsageDashboardService
+@enduml

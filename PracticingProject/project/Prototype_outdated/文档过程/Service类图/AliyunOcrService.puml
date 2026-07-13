@@ -1,0 +1,31 @@
+' AliyunOcrService 类图
+@startuml AliyunOcrService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>AliyunOcrService</b>" {
+    - objectMapper: ObjectMapper
+    - enabled: boolean
+    - endpoint: String
+    - accessKeyId: String
+    - accessKeySecret: String
+    - type: String
+    - outputCoordinate: String
+    - outputOricoord: boolean
+    - outputRow: boolean
+    - outputParagraph: boolean
+    - outputTable: boolean
+    - connectTimeoutMillis: int
+    - readTimeoutMillis: int
+    - callbackToken: String
+    + recognize(imageBytes: byte[]): JsonNode
+    + isEnabled(): boolean
+    + isConfigured(): boolean
+    + isCallbackTokenRequired(): boolean
+    + verifyCallbackToken(token: String): void
+    - getClient(): Client
+    - defaultIfBlank(value: String, defaultValue: String): String
+}
+@enduml

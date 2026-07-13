@@ -1,0 +1,21 @@
+' UsageBalanceQuotaService 类图
+@startuml UsageBalanceQuotaService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UsageBalanceQuotaService</b>" {
+    - userTokenService: UserTokenService
+    + reserveLlmTokens(userId, estimatedPromptTokens, maxCompletionTokens): TokenReservation
+    + reserveEmbeddingTokens(userId, texts): TokenReservation
+    + recordChatRequest(userId): void
+    + settleReservation(reservation, actualTokens): void
+    + getSnapshots(userIds): Map<String, UserUsageSnapshot>
+    + getDailyAggregates(userIds, days): List<DailyUsageAggregate>
+    - buildQuotaView(scope, userId, quota): QuotaView
+    - currentDay(): String
+    - isQuotaManaged(userId): boolean
+}
+note right: extends UsageQuotaService
+@enduml

@@ -1,0 +1,15 @@
+' AuthController 类图模板
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>AuthController</b>" {
+    - jwtUtils: JwtUtils
+    + refreshtoken(request: RefreshTokenRequest): ApiResult
+    + customBackendError(code: String, msg: String): ApiResult
+}
+@enduml

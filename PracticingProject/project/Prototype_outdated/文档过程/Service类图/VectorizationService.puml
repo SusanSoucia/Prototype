@@ -1,0 +1,17 @@
+' VectorizationService 类图
+@startuml VectorizationService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>VectorizationService</b>" {
+    - embeddingClient: EmbeddingClient
+    - elasticsearchService: ElasticsearchService
+    - documentVectorRepository: DocumentVectorRepository
+    + vectorize(fileMd5, userId, orgTag, isPublic): void
+    + vectorize(fileMd5, userId, orgTag, isPublic, requesterId): void
+    + vectorizeWithUsage(fileMd5, userId, orgTag, isPublic, requesterId): VectorizationUsageResult
+    - fetchTextChunks(fileMd5): List<TextChunk>
+}
+@enduml

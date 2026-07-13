@@ -1,0 +1,36 @@
+' DocumentController 类图模板
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>DocumentController</b>" {
+    - documentService: DocumentService
+    - fileUploadRepository: FileUploadRepository
+    - organizationTagRepository: OrganizationTagRepository
+    - jwtUtils: JwtUtils
+    - chatHandler: ChatHandler
+    + deleteDocument(fileMd5: String, userId: String, role: String): ApiResult
+    + reindexDocument(fileMd5: String, userId: String, role: String): ApiResult
+    + retryVectorizationAsync(fileMd5: String, userId: String, role: String): ApiResult
+    + getAccessibleFiles(userId: String, orgTags: String, page: Integer, size: Integer): ApiResult
+    + getUserUploadedFiles(userId: String): ApiResult
+    + downloadFileByName(fileName: String, authorization: String, token: String): ApiResult
+    + previewFileByName(fileName: String, fileMd5: String, pageNumber: Integer, authorization: String, token: String): ApiResult
+    + previewPdfPage(fileMd5: String, pageNumber: Integer, userId: String, orgTags: String): ApiResult
+    + downloadFileByMd5(fileMd5: String, authorization: String, token: String): ApiResult
+    + getReferenceDetail(sessionId: String, referenceNumber: Integer, authorization: String): ApiResult
+    - paginateList(records: List<Map<String, Object>>, page: Integer, size: Integer): Map<String, Object>
+    - convertFilesToResponse(files: List<FileUpload>): List<Map<String, Object>>
+    - buildPreviewResponse(file: FileUpload, pageNumber: Integer, preferSinglePagePreview: boolean): Map<String, Object>
+    - buildSinglePagePreviewUrl(fileMd5: String, pageNumber: Integer): String
+    - getPreviewType(extension: String): String
+    - getFileExtension(fileName: String): String
+    - resolveRequestAuthContext(authorization: String, fallbackToken: String): RequestAuthContext
+    - extractBearerToken(authorization: String): String
+    - getOrgTagName(tagId: String): String
+}
+@enduml

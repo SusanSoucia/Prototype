@@ -1,0 +1,57 @@
+' ChatHandler 类图
+@startuml ChatHandler
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>ChatHandler</b>" {
+    - redisTemplate: RedisTemplate
+    - searchService: HybridSearchService
+    - llmProviderRouter: LlmProviderRouter
+    - rateLimitService: RateLimitService
+    - conversationService: ConversationService
+    - chatGenerationStateService: ChatGenerationStateService
+    - chatSessionRegistry: ChatSessionRegistry
+    - agentToolRegistry: AgentToolRegistry
+    - objectMapper: ObjectMapper
+    - chatMonitorExecutor: ThreadPoolTaskExecutor
+    + processMessage(userId, userMessage, session): void
+    + stopResponse(userId, generationId): void
+    + getReferenceMd5(generationId, referenceNumber): String
+    + getReferenceDetail(generationId, referenceNumber): ReferenceInfo
+    - runReActLoopSafely(userId, userMessage, conversationId, generationId, history, responseFuture): void
+    - runReActLoop(userId, userMessage, conversationId, generationId, history, responseFuture): void
+    - executeToolForReAct(userId, userMessage, generationId, conversationId, toolCall): ExecutedToolResult
+    - replaceReferencesFromSearchTool(generationId, userMessage, toolResult): void
+    - toolMessage(toolCallId, content): Map
+    - streamReActTurnBlocking(userId, conversationId, generationId, messages, tools): ReActTurn
+    - appendStreamChunk(userId, generationId, conversationId, chunk): void
+    - submitCompletionMonitor(userId, userMessage, conversationId, generationId, responseFuture): void
+    - finalizeResponse(userId, userMessage, conversationId, generationId, responseFuture, responseBuilder, completion): void
+    - persistConversation(userId, userMessage, completeResponse, conversationId, referenceMappings): boolean
+    - cleanupGenerationState(generationId, throwable): void
+    - finishCancelledGeneration(generationId, responseFuture, responseBuilder): boolean
+    - isGenerationCancelled(generationId): boolean
+    - getOrCreateConversationId(userId): String
+    - getConversationHistory(conversationId): List<Map>
+    - buildRecentFeedbackGuidance(userId): String
+    - parseFeedbackTimestamp(value): long
+    - getConversationHistoryRecords(conversationId): List<Map>
+    - updateConversationHistory(conversationId, userMessage, response, referenceMapping): void
+    - toSerializableReferenceMappings(referenceMapping): Map
+    - buildContext(searchResults, generationId, userMessage): String
+    - sendGenerationStart(userId, generationId, conversationId): void
+    - sendResponseChunk(userId, generationId, conversationId, chunk): void
+    - sendToolCallStatus(userId, generationId, conversationId, toolCall, status): void
+    - sendCompletionNotification(userId, generationId, conversationId, failed, persistenceDegraded): void
+    - handleError(userId, generationId, error): void
+    - sendRateLimitMessage(userId, generationId, exception): void
+    - toReferenceInfoMap(serializedMappings): Map<Integer, ReferenceInfo>
+    - buildReferenceInfo(result, fileLabel, userMessage): ReferenceInfo
+    - buildRetrievalLabel(retrievalMode): String
+    - buildEvidenceSnippet(userMessage, anchorText, matchedChunkText): String
+    - trimToMaxLength(value, maxLength): String
+    - normalizeEvidenceText(value): String
+}
+@enduml

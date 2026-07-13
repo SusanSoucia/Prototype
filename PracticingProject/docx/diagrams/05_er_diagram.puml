@@ -1,0 +1,88 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+title 企业RAG 数据库 ER 图（简化）
+
+entity "file_upload" as fu {
+    * file_md5 : VARCHAR(32) <<PK>>
+    --
+    * file_name : VARCHAR(255)
+    * file_size : BIGINT
+    * user_id : VARCHAR(64)
+    * org_tag : VARCHAR(128)
+    * is_public : BOOLEAN
+    * vectorization_status : VARCHAR(20)
+    * embedding_tokens : INT
+    * created_at : DATETIME
+    * updated_at : DATETIME
+}
+
+entity "document_vectors" as dv {
+    * id : BIGINT <<PK>>
+    --
+    * file_md5 : VARCHAR(32) <<FK>>
+    * chunk_id : INT
+    * text_content : TEXT
+    * page_number : INT
+    * anchor_text : VARCHAR(500)
+}
+
+entity "user" as usr {
+    * id : BIGINT <<PK>>
+    --
+    * username : VARCHAR(64)
+    * password_hash : VARCHAR(255)
+    * role : VARCHAR(20)
+    * org_tags : VARCHAR(500)
+    * token_balance : BIGINT
+    * status : VARCHAR(20)
+    * created_at : DATETIME
+}
+
+entity "conversation" as conv {
+    * id : VARCHAR(64) <<PK>>
+    --
+    * user_id : BIGINT <<FK>>
+    * title : VARCHAR(255)
+    * is_archived : BOOLEAN
+    * created_at : DATETIME
+    * updated_at : DATETIME
+}
+
+entity "chat_message" as msg {
+    * id : BIGINT <<PK>>
+    --
+    * conversation_id : VARCHAR(64) <<FK>>
+    * role : VARCHAR(20)
+    * content : LONGTEXT
+    * reference_mappings : JSON
+    * token_count : INT
+    * created_at : DATETIME
+}
+
+entity "organization_tag" as ot {
+    * id : BIGINT <<PK>>
+    --
+    * tag_name : VARCHAR(128)
+    * parent_id : BIGINT
+    * description : VARCHAR(500)
+}
+
+fu ||--o{ dv : "1:N\n(一个文件多个分块)"
+usr ||--o{ conv : "1:N\n(用户对话历史)"
+conv ||--o{ msg : "1:N\n(对话消息记录)"
+usr }o--|| ot : "N:1\n(用户归属组织)"
+
+note right of dv
+  <b>MySQL存储文本分块</b>
+  （不含向量，向量仅存ES）
+end note
+
+note right of msg
+  reference_mappings 示例：
+  {"1": {"fileMd5":"...",
+         "chunkId":42,
+         "fileName":"..."}}
+end note
+
+@enduml

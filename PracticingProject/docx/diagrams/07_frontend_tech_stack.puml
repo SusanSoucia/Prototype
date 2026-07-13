@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontSize 11
+skinparam rectangle {
+  RoundCorner 6
+}
+skinparam package {
+  RoundCorner 4
+  FontSize 12
+  FontStyle bold
+}
+
+title 企业RAG 前端分层架构
+
+rectangle "表现层" as L1 #E3F2FD {
+  rectangle "  Chat\n  问答页  " as v1
+  rectangle "  Knowledge\n  Base 知识库  " as v2
+  rectangle "  Login\n  登录/注册  " as v3
+  rectangle "  User\n  用户管理  " as v4
+  rectangle "  Personal\n  个人中心  " as v5
+  rectangle "  Usage\n  Monitor  " as v6
+  rectangle "  ChatMessage\n  ChatInput\n  UploadDialog\n  SearchDialog\n  FilePreview  " as v7
+}
+
+rectangle "业务逻辑层" as L2 #FCE4EC {
+  rectangle "  authStore\n  认证·用户·角色  " as s1
+  rectangle "  chatStore\n  WebSocket\n  消息·流式  " as s2
+  rectangle "  kbStore\n  上传队列\n  进度追踪  " as s3
+  rectangle "  themeStore\n  routeStore\n  tabStore  " as s4
+  rectangle "  authGuard\n  roleGuard\n  路由守卫  " as s5
+}
+
+rectangle "数据访问层" as L3 #E8EAF6 {
+  rectangle "  auth.ts\n  登录·注册\n  Token刷新  " as a1
+  rectangle "  knowledge.ts\n  文档CRUD\n  上传  " as a2
+  rectangle "  chat.ts\n  对话·历史  " as a3
+  rectangle "  search.ts\n  user.ts\n  route.ts  " as a4
+  rectangle "  @sa/axios\n  JWT注入\n  401拦截  " as a5
+  rectangle "  useWebSocket\n  自动重连\n  心跳  " as a6
+}
+
+L1 -[hidden]d-> L2
+L2 -[hidden]d-> L3
+
+@enduml

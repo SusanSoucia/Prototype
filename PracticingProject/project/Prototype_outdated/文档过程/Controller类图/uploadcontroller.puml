@@ -1,0 +1,27 @@
+' UploadController 类图模板
+@startuml UploadController
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>UploadController</b>" {
+    - uploadService: UploadService
+    - kafkaTemplate: KafkaTemplate<String, Object>
+    - kafkaConfig: KafkaConfig
+    - userService: UserService
+    - fileUploadRepository: FileUploadRepository
+    - fileTypeValidationService: FileTypeValidationService
+    - parseService: ParseService
+    + uploadChunk(fileMd5: String, chunkIndex: int, totalSize: long, fileName: String, totalChunks: Integer, orgTag: String, isPublic: boolean, file: MultipartFile, userId: String): ApiResult
+    + getUploadStatus(fileMd5: String, userId: String): ApiResult
+    + mergeFile(request: MergeRequest, userId: String): ApiResult
+    + getSupportedFileTypes(): ApiResult
+    - buildAlreadyMergedResponse(fileMd5: String): ApiResult
+    - calculateProgress(uploadedChunks: List<Integer>, totalChunks: int): double
+    - formatSize(sizeInBytes: long): String
+    - getFileType(fileName: String): String
+}
+@enduml

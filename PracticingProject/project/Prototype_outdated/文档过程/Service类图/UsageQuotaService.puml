@@ -1,0 +1,47 @@
+' UsageQuotaService 类图
+@startuml UsageQuotaService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UsageQuotaService</b>" {
+    - stringRedisTemplate: StringRedisTemplate
+    - properties: UsageQuotaProperties
+    + reserveLlmTokens(userId, estimatedPromptTokens, maxCompletionTokens): TokenReservation
+    + reserveEmbeddingTokens(userId, texts): TokenReservation
+    + reserveLlmTokensWithGlobalBudget(userId, estimatedPromptTokens, maxCompletionTokens, ...limits): TokenReservationBundle
+    + reserveEmbeddingTokensWithGlobalBudget(userId, texts, ...limits): TokenReservationBundle
+    + recordChatRequest(userId): void
+    + settleReservation(reservation, actualTokens): void
+    + abortReservation(reservation): void
+    + settleReservation(reservationBundle, actualTokens): void
+    + abortReservation(reservationBundle): void
+    + getSnapshot(userId): UserUsageSnapshot
+    + getSnapshots(userIds): Map<String, UserUsageSnapshot>
+    + getDailyAggregates(userIds, days): List<DailyUsageAggregate>
+    + estimateChatTokens(messages): int
+    + estimateEmbeddingTokens(texts): int
+    + estimateTextTokens(text): int
+    - reserveDailyTokens(scope, userId, reserveTokens, dailyLimit, message): TokenReservation
+    - reserveGlobalRollingTokens(scope, windowLabel, reserveTokens, limit, windowSeconds, message): TokenReservation
+    - addIfActive(reservations, reservation): void
+    - abortReservedTokens(reservations): void
+    - incrementMetricIfPresent(reservation): void
+    - incrementMetricKey(metricKey, increment, expiresInSeconds): void
+    - buildQuotaView(scope, userId, quota): QuotaView
+    - readCounter(key): long
+    - ensureExpiry(key, expiresInSeconds): void
+    - buildQuotaKey(scope, userId): String
+    - buildMetricKey(scope, userId): String
+    - buildQuotaKey(scope, userId, day): String
+    - buildMetricKey(scope, userId, day): String
+    - buildGlobalBudgetKey(scope, windowLabel): String
+    - currentDay(): String
+    - secondsUntilEndOfDay(): long
+    - retentionTtlSeconds(): long
+    - isQuotaManaged(userId): boolean
+    - emptySnapshot(): UserUsageSnapshot
+    - buildDailyAggregate(userIds, day): DailyUsageAggregate
+}
+@enduml

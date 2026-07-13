@@ -1,0 +1,84 @@
+@startuml
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName WenQuanYi Micro Hei
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam maxmessagesize 120
+skinparam ParticipantPadding 40
+skinparam BoxPadding 10
+
+title 企业RAG — 登录流程
+
+actor 用户 as User
+participant "Vue 3 前端" as Browser
+participant "UserController" as Ctrl
+participant "RateLimitService" as RL
+participant "UserService" as Svc
+participant "AuthController" as AuthCtrl
+database "MySQL\n(users 表)" as DB
+database "Redis\n(Token 缓存)" as Redis
+
+== 登录 ==
+
+User -> Browser: 输入用户名、密码
+Browser -> Ctrl: POST /api/v1/users/login\n{username, password}
+Ctrl -> RL: checkLoginByIp(clientIp)
+RL --> Ctrl: IP 速率检查通过
+Ctrl -> Svc: authenticateUser(username, password)
+Svc -> DB: SELECT * FROM users\nWHERE username = ?
+DB --> Svc: user 实体 (含 BCrypt 哈希)
+Svc -> Svc: PasswordUtil.matches(password, hash)
+alt 密码匹配
+    Svc -> Svc: jwtUtils.generateToken(username)\nclaims: userId, role, orgTags\n有效期 1 小时
+    Svc -> Svc: jwtUtils.generateRefreshToken(username)\nclaims: type="refresh", userId\n有效期 7 天
+    Svc -> Redis: SET token:{tokenId}\nvalue: userId\nEXPIRE 3600
+    Redis --> Svc: OK
+    Svc --> Ctrl: {token, refreshToken}
+    Ctrl --> Browser: 200 {code:200, message, data:{token, refreshToken}}
+    Browser -> Browser: localStorage.setItem\n('token', token)\n('refreshToken', refreshToken)
+    Browser --> User: 跳转至原请求页面
+else 密码不匹配
+    Svc --> Ctrl: CustomException\n("Invalid credentials")
+    Ctrl --> Browser: 401 {code:401, message:"Invalid credentials"}
+    Browser --> User: 提示错误，留在登录页
+else 速率限制触发
+    RL --> Ctrl: RateLimitExceededException
+    Ctrl --> Browser: 429 {code:429, retryAfterSeconds: N}
+    Browser --> User: 提示稍后重试
+end
+
+== 获取用户信息 ==
+
+Browser -> Ctrl: GET /api/v1/users/me\n(Authorization: Bearer token)
+Ctrl -> Ctrl: jwtUtils.validateToken(token)\n提取 username
+Ctrl -> DB: SELECT * FROM users\nWHERE username = ?
+DB --> Ctrl: user (id, username, role, orgTags, primaryOrg)
+Ctrl --> Browser: 200 {code:200, data:{id, userName, role, orgTags, primaryOrg}}
+Browser -> Browser: 更新 authStore.userInfo
+
+== Token 刷新 ==
+
+note over Browser, Redis
+  请求拦截器检测到 Token 即将过期 (剩余 < 5 分钟)
+  或后端返回过期码 9999/9998/3333 时自动触发
+end note
+Browser -> AuthCtrl: POST /api/v1/auth/refreshToken\n{refreshToken}
+AuthCtrl -> AuthCtrl: jwtUtils.validateRefreshToken\n验证 type="refresh" 声明
+AuthCtrl -> Redis: isRefreshTokenValid(refreshTokenId)
+Redis --> AuthCtrl: 有效
+AuthCtrl -> AuthCtrl: generateToken(username)\n+ generateRefreshToken(username)\n双 Token 轮换
+AuthCtrl --> Browser: 200 {code:200, data:{token, refreshToken}}
+Browser -> Browser: 更新 localStorage\n重试原请求
+
+== 登出 ==
+
+User -> Browser: 点击退出登录
+Browser -> Ctrl: POST /api/v1/users/logout\n(Authorization: Bearer token)
+Ctrl -> Ctrl: jwtUtils.invalidateToken(token)\n加入 Redis 黑名单
+Ctrl -> Redis: removeTokenFromCache(tokenId)
+Ctrl --> Browser: 200 {code:200}
+Browser -> Browser: clearAuthStorage\n(移除 token + refreshToken + userInfo)
+Browser --> User: 跳转至登录页
+
+@enduml

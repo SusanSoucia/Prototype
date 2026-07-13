@@ -1,0 +1,45 @@
+' UserTokenService 类图
+@startuml UserTokenService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UserTokenService</b>" {
+    - stringRedisTemplate: StringRedisTemplate
+    - usageQuotaProperties: UsageQuotaProperties
+    - userTokenRecordRepository: UserTokenRecordRepository
+    - userDailyChatCountRepository: UserDailyChatCountRepository
+    - userRepository: UserRepository
+    + getLlmTokenBalance(userId): Long
+    + getEmbeddingTokenBalance(userId): Long
+    + consumeLlmTokens(userId, tokens): void
+    + consumeEmbeddingTokens(userId, tokens): void
+    + incrementUserTotalRequestCount(scope, userId): void
+    + getUserTotalRequestCount(scope, userId): long
+    + getTodayTopConsumers(tokenType, limit): List<UserTokenRecord>
+    + addLlmTokens(userId, tokens): void
+    + addLlmTokens(userId, tokens, reason, remark): void
+    + addEmbeddingTokens(userId, tokens): void
+    + addEmbeddingTokens(userId, tokens, reason, remark): void
+    + hasEnoughLlmTokens(userId, tokens): boolean
+    + hasEnoughEmbeddingTokens(userId, tokens): boolean
+    + getUserTokenRecords(userId, page, size): Page<UserTokenRecord>
+    + getUserLlmTotalIncreaseTokens(userId): Long
+    + getUserEmbeddingTotalIncreaseTokens(userId): Long
+    + getUserTotalIncreaseTokens(userId, tokenType): Long
+    + getUserDailyChatCount(userId, day): long
+    + updateUserDailyChatCount(userId, day): void
+    + getDailyStatsByType(startDate, endDate, tokenType): List<DailyUsageStat>
+    + getDailyReqCountStats(startDate, endDate): List<DailyReqCountStat>
+    + getLowBalanceUsers(tokenType, minBalance): List<UserTokenRecord>
+    - buildQuotaKey(scope, userId): String
+    - buildLlmTokenKey(userId): String
+    - buildEmbeddingTokenKey(userId): String
+    - resolveInitToken(userId, quota): long
+    - isAdminUser(userId): boolean
+    - recordTokenIncrease(userId, tokenType, amount, balanceBefore, balanceAfter, reason, remark): void
+    - recordTokenConsume(userId, tokenType, amount, balanceBefore, balanceAfter): void
+    - safeAddTokenBalance(currentBalance, tokens): Long
+}
+@enduml

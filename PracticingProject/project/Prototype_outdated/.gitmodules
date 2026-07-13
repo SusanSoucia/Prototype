@@ -1,0 +1,8 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/AsRe6666/group45-frontend
+	branch = main
+[submodule "backend"]
+	path = backend
+	url = https://github.com/AsRe6666/group45-backend
+	branch = main

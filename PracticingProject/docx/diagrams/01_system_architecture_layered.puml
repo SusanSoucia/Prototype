@@ -1,0 +1,185 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+skinparam packageBorderColor #666666
+skinparam packageBorderThickness 2
+skinparam packageFontSize 14
+skinparam packageFontName 黑体
+skinparam componentFontSize 11
+skinparam databaseFontSize 11
+skinparam cloudFontSize 11
+skinparam arrowColor #555555
+
+title 企业RAG 系统分层架构图\n(5层架构：前端 → 应用编排 → AI云服务 → 中间件基础设施 → 文档解析)
+
+'
+' LAYER 1: 用户表现层
+'
+package "【第1层】用户表现层 (Presentation)" as L1 #E3F2FD {
+
+    component "Vue 3 + TypeScript SPA\n(Naive UI + Pinia + Soybean Admin)" as Browser #BBDEFB
+
+    note right of Browser
+      <b>前端单页应用</b>
+      • WebSocket 流式问答
+      • 知识库管理后台
+      • 用户与权限管理
+      • ECharts 监控仪表盘
+      <b>通信协议：</b>HTTP REST + WebSocket
+      <b>认证方式：</b>JWT Bearer Token
+    end note
+}
+
+'
+' LAYER 2: 应用编排层
+'
+package "【第2层】应用编排层 (Application Orchestration)" as L2 #E8F5E9 {
+
+    component "Spring Boot 3.4.2\n(M1: 应用服务框架)" as M1 #A5D6A7
+
+    package "核心业务服务组件" as BizServices #C8E6C9 {
+        component "ChatHandler\nReAct Agent 循环" as ChatHandler
+        component "HybridSearchService\nKNN+BM25混合检索" as HybridSearch
+        component "AgentToolRegistry\n4个工具分发路由" as ToolRegistry
+        component "ParseService\n文档解析统一编排" as ParseService
+        component "VectorizationService\n批量向量化调度" as VecService
+        component "UploadService\n分片上传与合并" as UploadService
+        component "RateLimitService\n滑动窗口速率限制" as RateLimit
+    }
+
+    component "Kafka Consumer\n(进程内异步线程池)" as Consumer #81C784
+
+    M1 --> ChatHandler
+    M1 --> UploadService
+    M1 --> RateLimit
+
+    note right of BizServices
+      <b>设计模式</b>
+      • ReAct Agent
+      • Strategy(解析器分发)
+      • Template Method
+    end note
+}
+
+'
+' LAYER 3: AI云服务层
+'
+package "【第3层】AI 云服务层 (AI Cloud Services)" as L3 #E0F7FA {
+
+    cloud "DeepSeek API\n(M2: 大语言模型)" as M2 #80DEEA {
+        [ReAct 推理与决策]
+        [知识增强生成]
+        [SSE 流式逐token输出]
+    }
+
+    cloud "DashScope API\n(M3: Embedding 向量化)" as M3 #80DEEA {
+        [text-embedding-v4]
+        [2048维归一化向量]
+        [批量 ≤10条/次]
+    }
+
+    note right of L3
+      <b>调用方式：</b>HTTPS REST
+      <b>服务等级：</b>99.9% SLA
+      <b>计费：</b>按 Token 消耗
+      <b>可用性风险：</b>
+        M2不可用→AI问答中断
+        M3不可用→降级为纯BM25搜索
+    end note
+}
+
+'
+' LAYER 4: 中间件与基础设施层
+'
+package "【第4层】中间件与基础设施层 (Middleware & Infrastructure)" as L4 #FFF3E0 {
+
+    package "检索引擎" as ES_GROUP #FFECB3 {
+        database "Elasticsearch 8.10\n(M4: 向量+全文检索)" as M4 #FFE082
+    }
+
+    package "关系数据库" as DB_GROUP #FFECB3 {
+        database "MySQL 8.0\n(M5: 结构化数据存储)" as M5 #FFE082
+    }
+
+    package "缓存服务" as CACHE_GROUP #FFCC80 {
+        database "Redis 7.0\n(M6: 高速缓存)" as M6 #FFB74D
+    }
+
+    package "消息队列" as MQ_GROUP #FFCC80 {
+        queue "Kafka 3.2\n(M7: 异步消息)" as M7 #FFB74D
+    }
+
+    package "对象存储" as OS_GROUP #FFCC80 {
+        database "MinIO 8.5\n(M8: S3兼容存储)" as M8 #FFB74D
+    }
+
+    note right of L4
+      <b>部署方式：</b>
+      Docker Compose 一键启动
+      7个独立容器
+      <b>总内存需求：</b>~6-8 GB
+      <b>各组件角色：</b>
+      • M4: 向量+全文混合检索
+      • M5: 所有结构化业务数据
+      • M6: 热缓存(亚毫秒响应)
+      • M7: 异步解耦上传与处理
+      • M8: 大文件分片暂存与合并
+    end note
+}
+
+'
+' LAYER 5: 文档解析层
+'
+package "【第5层】文档解析层 (Document Parsing)" as L5 #F3E5F5 {
+
+    component "LiteParse CLI\n(M9: PDF解析)" as M9 #CE93D8
+    component "Apache Tika\n(M10: 通用文档解析)" as M10 #CE93D8
+    component "HanLP\n(M11: 中文分词)" as M11 #CE93D8
+
+    note right of L5
+      <b>运行方式：</b>
+      M9: 独立子进程(CLI)
+      M10/M11: JVM内Java库
+      <b>处理链路：</b>
+      M8下载→M9/M10解析
+      →M11分词切块→M5存文本
+      →M3向量化→M4建索引
+    end note
+}
+
+'
+' CROSS-LAYER CONNECTIONS
+'
+
+' Layer 1 → Layer 2
+Browser -down-> M1 : ① HTTP REST / WebSocket\nJWT 认证
+
+' Layer 2 → Layer 3 (AI)
+M1 -down-> M2 : ② HTTPS SSE 流式\n/v1/chat/completions
+M1 -down-> M3 : ③ HTTPS\n/embeddings/text-embedding
+
+' Layer 2 → Layer 4 (Middleware)
+M1 -down-> M4 : ④ HTTPS\nKNN+BM25搜索 / Bulk索引
+M1 -down-> M5 : ⑤ JDBC\nJPA/Hibernate CRUD
+M1 -down-> M6 : ⑥ TCP (Jedis)\n缓存读写 / 限流 / Bitmap
+M1 -down-> M7 : ⑦ TCP (KafkaTemplate)\n事务性消息发送
+M1 -down-> M8 : ⑧ HTTP (S3 SDK)\n分片上传 / composeObject / 预签名
+
+' Kafka Consumer → others
+M7 -down-> Consumer : ⑨ 拉取 FileProcessingTask 消息
+Consumer -down-> M8 : ⑩ 下载合并文件(预签名URL)
+Consumer -down-> M9 : ⑪A CLI fork (PDF)
+Consumer -down-> M10 : ⑪B Java API (Word/TXT/...)
+Consumer -down-> M11 : ⑫ Java API 分词+切块
+Consumer -down-> M3 : ⑬ 批量向量化(每批10条)
+Consumer -down-> M4 : ⑭ Bulk索引(向量+元数据)
+Consumer -down-> M5 : ⑮ 写入分块文本 + 更新文件状态
+
+' ─── Layer separation lines (visual) ───
+note top of L1
+  <b>⬆ 数据流方向：请求从上到下，响应从下到上 ⬇</b>
+  <b>同步操作：</b>①-⑧ 用户等待响应
+  <b>异步操作：</b>⑨-⑮ 后台处理，用户不等待
+end note
+
+@enduml

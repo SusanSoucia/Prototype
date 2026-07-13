@@ -1,0 +1,30 @@
+# ==============================================================================
+# Spring Boot Dev Profile — 仅覆盖本地开发调试相关配置
+# 数据库、Redis、Kafka、ES、MinIO 等基础设施连接信息统一由
+# application.yml (读取 .env 环境变量) 管理，此文件不做重复定义。
+# ==============================================================================
+
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+logging:
+  level:
+    com.group45.backend: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.web: ${LOG_LEVEL_WEB:DEBUG}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:DEBUG}
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# 开发环境 JWT fallback，方便本地快速启动（生产环境务必通过 .env 覆盖）
+jwt:
+  secret-key: ${JWT_SECRET_KEY:SGVsbG9Xb3JsZFRoaXNJc0FTZWNyZXRLZXlGb3JKV1Q=}

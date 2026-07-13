@@ -1,0 +1,23 @@
+' RateLimitConfigService 类图
+@startuml RateLimitConfigService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>RateLimitConfigService</b>" {
+    - properties: RateLimitProperties
+    - rateLimitConfigRepository: RateLimitConfigRepository
+    + loadPersistedConfigs(): void
+    + getCurrentSettings(): RateLimitSettingsView
+    + updateSettings(request, updatedBy): RateLimitSettingsView
+    - buildDefaultSettings(): RateLimitSettingsView
+    - mergeOverrides(defaults, configs): RateLimitSettingsView
+    - persistWindowLimit(key, limit, updatedBy): void
+    - persistDualWindowLimit(key, limit, updatedBy): void
+    - persistTokenBudgetLimit(key, limit, updatedBy): void
+    - validateWindowLimit(limit, label): void
+    - validateDualWindowLimit(limit, label): void
+    - validateTokenBudgetLimit(limit, label): void
+}
+@enduml

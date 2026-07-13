@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+
+title 企业RAG 部署架构图
+
+node "用户终端" {
+    [浏览器\n(Vue 3 + Naive UI)] as Browser
+}
+
+node "应用服务器 (4C8G)" {
+    [Spring Boot App\n(端口 8080)] as App
+    [Kafka Consumer\n(内置线程)] as Consumer
+}
+
+node "AI云服务" {
+    [DeepSeek API\n(LLM推理)] as DeepSeek
+    [DashScope API\n(文本向量化)] as Embedding
+}
+
+node "中间件服务器 (8C16G)" {
+    database "MySQL 8.0\n(端口 3306)" as MySQL
+    database "Redis 7.0\n(端口 6379)" as Redis
+    database "Elasticsearch 8.10\n(端口 9200)" as ES
+    queue "Kafka 3.2\n(端口 9092)" as Kafka
+    database "MinIO 8.5\n(端口 9000)" as MinIO
+}
+
+node "本地工具" {
+    [LiteParse CLI\n(PDF解析)] as Liteparse
+    [Apache Tika\n(通用解析)] as Tika
+    [HanLP\n(中文分词)] as HanLP
+}
+
+Browser --> App : WebSocket / HTTPS :443
+App --> DeepSeek : HTTPS :443
+App --> Embedding : HTTPS :443
+App --> MySQL : JDBC :3306
+App --> Redis : TCP :6379
+App --> ES : HTTPS :9200
+App --> Kafka : TCP :9092
+App --> MinIO : HTTP :9000
+Consumer --> Liteparse : CLI fork
+Consumer --> Tika : Java API
+Consumer --> HanLP : Java API
+
+note right of App
+  <b>docker-compose一键启动</b>
+  7个中间件容器
+  启动时间: 2-4小时(首次)
+  内存需求: 6-8GB
+end note
+
+@enduml

@@ -1,0 +1,72 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+
+title 企业RAG 管理员上传文档数据流
+
+actor "管理员\n(浏览器)" as Admin
+participant "M1: Spring Boot\n(UploadController)" as M1
+participant "M8: MinIO" as M8
+participant "M5: MySQL" as M5
+participant "M6: Redis" as M6
+participant "M7: Kafka" as M7
+participant "Kafka\nConsumer" as Consumer
+participant "M9: LiteParse" as M9
+participant "M10: Tika" as M10
+participant "M11: HanLP" as M11
+participant "M3: Embedding" as M3
+participant "M4: ES" as M4
+
+== Phase A: 分片上传（同步） ==
+
+loop 每片 5MB
+    Admin -> M1: POST /upload/chunk\n(fileMd5, chunkIndex, 文件二进制)
+    M1 -> M8: putObject(chunks/{md5}/{idx})
+    M8 --> M1: OK
+    M1 -> M6: SETBIT upload:{uid}:{md5} {idx} 1
+    M1 -> M5: INSERT chunk_info
+    M1 --> Admin: 分片上传成功
+end
+
+== Phase B: 合并与分发（同步+异步边界） ==
+
+Admin -> M1: POST /upload/merge\n({fileMd5, fileName, totalChunks})
+M1 -> M8: composeObject\n(chunks/* -> merged/md5)
+M8 --> M1: 合并完成
+M1 -> M5: INSERT file_upload\n(状态=UPLOADING)
+note right: 用户立即得到响应
+
+M1 -> M7: kafkaTemplate.send(topic, task)\n(事务性发送)
+
+M1 --> Admin: {"status": "success", "message": "文件已提交处理"}
+
+== Phase C: 异步处理（Kafka Consumer） ==
+
+M7 -> Consumer: 消费 FileProcessingTask
+Consumer -> M8: 下载文件(预签名URL)
+M8 --> Consumer: 文件字节流
+
+alt PDF文件
+    Consumer -> M9: lit parse --input file.pdf
+    M9 --> Consumer: JSON(按页文本)
+else Word/TXT/其他
+    Consumer -> M10: AutoDetectParser.parse()
+    M10 --> Consumer: 纯文本
+end
+
+Consumer -> M11: StandardTokenizer分词
+M11 --> Consumer: 分词序列
+Consumer -> M5: INSERT document_vectors\n(分块文本，无向量)
+Consumer -> M3: 批量Embedding(每批10条)
+M3 --> Consumer: float[2048][] 向量列表
+Consumer -> M4: 写入ES索引\n(向量+文本+元数据)
+Consumer -> M5: UPDATE file_upload\nSET status='COMPLETED'
+
+note over M7, Consumer
+  失败处理：
+  - 重试3次（间隔3秒）
+  - 仍失败 → DLT死信队列
+  - 保留原始topic/offset
+end note
+
+@enduml

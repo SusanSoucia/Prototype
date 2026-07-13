@@ -1,0 +1,33 @@
+' UserController 类图模板
+@startuml UserController
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>UserController</b>" {
+    - userService: UserService
+    - jwtUtils: JwtUtils
+    - userRepository: UserRepository
+    - rateLimitService: RateLimitService
+    - usageQuotaService: UsageQuotaService
+    - userTokenService: UserTokenService
+    + register(request: UserRequest, httpServletRequest: HttpServletRequest): ApiResult
+    + login(request: UserRequest, httpServletRequest: HttpServletRequest): ApiResult
+    + getCurrentUser(token: String): ApiResult
+    + getUserOrgTags(token: String): ApiResult
+    + setPrimaryOrg(token: String, request: PrimaryOrgRequest): ApiResult
+    + getCurrentUserUsage(token: String): ApiResult
+    + getUploadOrgTags(userId: String): ApiResult
+    + logout(token: String): ApiResult
+    + logoutAll(token: String): ApiResult
+    + getTokenRecords(token: String, page: int, size: int): ApiResult
+    - buildRateLimitResponse(exception: RateLimitExceededException): ApiResult
+    - resolveClientIp(request: HttpServletRequest): String
+    - extractForwardedForIp(xForwardedFor: String): String
+    - firstUsableIp(candidates: String...): Optional<String>
+    - isUsableIp(ip: String): boolean
+}
+@enduml

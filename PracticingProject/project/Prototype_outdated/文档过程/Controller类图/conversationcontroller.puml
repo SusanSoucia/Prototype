@@ -1,0 +1,17 @@
+' ConversationController 类图模板
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>ConversationController</b>" {
+    - jwtUtils: JwtUtils
+    - conversationService: ConversationService
+    + getConversations(token: String, start_date: String, end_date: String, conversationId: String): ApiResult
+    - parseStartDate(dateTimeStr: String): LocalDateTime
+    - parseEndDate(dateTimeStr: String): LocalDateTime
+}
+@enduml

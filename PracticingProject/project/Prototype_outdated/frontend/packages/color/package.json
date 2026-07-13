@@ -1,0 +1,21 @@
+{
+  "name": "@sa/color",
+  "version": "1.0.5",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./src/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@sa/utils": "workspace:*",
+    "colord": "2.9.3"
+  }
+}

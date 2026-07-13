@@ -1,0 +1,24 @@
+' TokenCacheService 类图
+@startuml TokenCacheService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>TokenCacheService</b>" {
+    - redisTemplate: RedisTemplate<String, Object>
+    + cacheToken(tokenId, userId, username, expireTimeMs): void
+    + cacheRefreshToken(refreshTokenId, userId, tokenId, expireTimeMs): void
+    + isTokenValid(tokenId): boolean
+    + getTokenInfo(tokenId): Map<String, Object>
+    + isRefreshTokenValid(refreshTokenId): boolean
+    + getRefreshTokenInfo(refreshTokenId): Map<String, Object>
+    + blacklistToken(tokenId, expireTimeMs): void
+    + isTokenBlacklisted(tokenId): boolean
+    + removeToken(tokenId, userId): void
+    + removeAllUserTokens(userId): void
+    + getUserActiveTokenCount(userId): long
+    - addTokenToUser(userId, tokenId, expireTimeMs): void
+    - removeTokenFromUser(userId, tokenId): void
+}
+@enduml

@@ -1,0 +1,52 @@
+diff --git a/dist/index.js b/dist/index.js
+index 0a365647d585b6c4818d78feb48f3fdaf5e23f3b..a0b64a7580bd7a26593f2537522dae6388aa88b1 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -46344,7 +46344,7 @@
+     `, [cM("active", {
+       zIndex: 1,
+       animationName: "button-wave-spread, button-wave-opacity"
+-    })]), isBrowser$1 && "MozBoxSizing" in document.createElement("div").style ? c$1("&::moz-focus-inner", {
++    })]), isBrowser$1 && "MozBoxSizing" in document.createElement("div").style ? c$1("&::-moz-focus-inner", {
+       border: 0
+     }) : null, cE("border, state-border", `
+       position: absolute;
+diff --git a/dist/index.mjs b/dist/index.mjs
+index bd3d1eb43077269e74cfbc713dfca3df530c77de..1817a14f7d2efed23dc3de481cfe25ed27576a8e 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -46340,7 +46340,7 @@ var style$1h = c$1([cB("button", `
+     `, [cM("active", {
+   zIndex: 1,
+   animationName: "button-wave-spread, button-wave-opacity"
+-})]), isBrowser$1 && "MozBoxSizing" in document.createElement("div").style ? c$1("&::moz-focus-inner", {
++})]), isBrowser$1 && "MozBoxSizing" in document.createElement("div").style ? c$1("&::-moz-focus-inner", {
+   border: 0
+ }) : null, cE("border, state-border", `
+       position: absolute;
+diff --git a/es/button/src/styles/index.cssr.mjs b/es/button/src/styles/index.cssr.mjs
+index a34678ab6025c4df529881641afed913f57dde70..46bf858967f2aa98118399ce64509320ee8b2224 100644
+--- a/es/button/src/styles/index.cssr.mjs
++++ b/es/button/src/styles/index.cssr.mjs
+@@ -116,7 +116,7 @@ export default c([cB('button', `
+  `, [cM('active', {
+   zIndex: 1,
+   animationName: 'button-wave-spread, button-wave-opacity'
+-})]), isBrowser && 'MozBoxSizing' in document.createElement('div').style ? c('&::moz-focus-inner', {
++})]), isBrowser && 'MozBoxSizing' in document.createElement('div').style ? c('&::-moz-focus-inner', {
+   border: 0
+ }) : null, cE('border, state-border', `
+  position: absolute;
+diff --git a/lib/button/src/styles/index.cssr.js b/lib/button/src/styles/index.cssr.js
+index 6a041cc212f28a631b641f5738507b9a508127ff..3fd64ed2f97fe2ee320084a85f39f97bce8432a3 100644
+--- a/lib/button/src/styles/index.cssr.js
++++ b/lib/button/src/styles/index.cssr.js
+@@ -121,7 +121,7 @@ exports.default = (0, cssr_1.c)([(0, cssr_1.cB)('button', `
+  `, [(0, cssr_1.cM)('active', {
+   zIndex: 1,
+   animationName: 'button-wave-spread, button-wave-opacity'
+-})]), _utils_1.isBrowser && 'MozBoxSizing' in document.createElement('div').style ? (0, cssr_1.c)('&::moz-focus-inner', {
++})]), _utils_1.isBrowser && 'MozBoxSizing' in document.createElement('div').style ? (0, cssr_1.c)('&::-moz-focus-inner', {
+   border: 0
+ }) : null, (0, cssr_1.cE)('border, state-border', `
+  position: absolute;

@@ -1,0 +1,45 @@
+' UserService 类图
+@startuml UserService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>UserService</b>" {
+    - userRepository: UserRepository
+    - organizationTagRepository: OrganizationTagRepository
+    - fileUploadRepository: FileUploadRepository
+    - orgTagCacheService: OrgTagCacheService
+    - usageQuotaService: UsageQuotaService
+    - globalUploadMaxFileSize: String
+    + registerUser(username, password): void
+    + registerUser(username, password, inviteCode): void
+    + createAdminUser(username, password, creatorUsername): void
+    + authenticateUser(username, password): String
+    + createOrganizationTag(tagId, name, description, parentTag, uploadMaxSizeMb, creatorUsername): OrganizationTag
+    + assignOrgTagsToUser(userId, orgTags, adminUsername): void
+    + getUserOrgTags(username): Map<String, Object>
+    + setUserPrimaryOrg(username, primaryOrg): void
+    + getUserPrimaryOrg(userId): String
+    + getOrganizationTagTree(): List<Map<String, Object>>
+    + updateOrganizationTag(tagId, name, description, parentTag, uploadMaxSizeMb, adminUsername): OrganizationTag
+    + isAdminUser(userId): boolean
+    + getOrganizationTag(tagId): OrganizationTag
+    + deleteOrganizationTag(tagId, adminUsername): void
+    + getUserList(keyword, orgTag, status, page, size): Map<String, Object>
+    - createPrivateOrgTag(privateTagId, username, owner): void
+    - ensureDefaultOrgTagExists(): void
+    - validatePassword(password): void
+    - buildTagTreeRecursive(tags): List<Map>
+    - wouldFormCycle(tagId, newParentId): boolean
+    - matchesUserListFilters(user, keyword, orgTag, status): boolean
+    - resolveOrGenerateTagId(tagId, name): String
+    - generateUniqueTagId(name): String
+    - buildTagSlug(name): String
+    - appendSuffix(base, suffix): String
+    - truncateTagId(tagId): String
+    - resolveUser(userId): User
+    - normalizeUploadMaxSizeBytes(uploadMaxSizeMb): Long
+    - toUploadMaxSizeMb(uploadMaxSizeBytes): Long
+}
+@enduml

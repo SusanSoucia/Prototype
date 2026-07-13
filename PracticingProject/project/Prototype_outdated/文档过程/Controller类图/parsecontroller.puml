@@ -1,0 +1,14 @@
+' ParseController 类图模板
+@startuml ParseController
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>ParseController</b>" {
+    - parseService: ParseService
+    + parseDocument(file: MultipartFile, fileMd5: String, userId: String): ApiResult
+}
+@enduml

@@ -1,0 +1,98 @@
+[33m2afca854[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/admin-data-statistics[m[33m, [m[1;31morigin/feature/admin-data-statistics[m[33m)[m Merge pull request #14 from AsRe6666/feature/role-based-ui-and-mock
+[33mab858e02[m feat: add role-based UI components and user management module
+[33mf7b6048e[m feat: 基于角色显示两套界面 + mock 双角色登录账号
+[33m847ac861[m Merge pull request #13 from AsRe6666/feature/frontend-ui-fixes
+[33m174db941[m[33m ([m[1;31morigin/feature/frontend-ui-fixes[m[33m)[m fix: 修复工具链显示和知识库布局问题
+[33m856e8e6a[m Merge pull request #12 from AsRe6666/feature/login-page-remove-unused
+[33ma5d74312[m[33m ([m[1;31morigin/feature/login-page-remove-unused[m[33m)[m Merge branch 'main' into feature/login-page-remove-unused
+[33mce4ba714[m Merge pull request #11 from AsRe6666/fix/source-link-login-redirect
+[33m31aa3f20[m[33m ([m[1;31morigin/fix/source-link-login-redirect[m[33m)[m fix: 修复预览页面新窗口按钮触发文件下载而非新窗口打开的问题
+[33m4b9348ac[m Merge pull request #10 from AsRe6666/fix/source-link-login-redirect
+[33m9a7d19bd[m fix: 修复聊天页点击来源链接跳转登录页的问题
+[33m26f44fa1[m Merge pull request #9 from AsRe6666/fix/preview-new-window-mime-type
+[33m93797a04[m[33m ([m[1;31morigin/fix/preview-new-window-mime-type[m[33m)[m fix: 修复预览页面新窗口按钮触发文件下载而非新窗口打开的问题
+[33m606ab259[m 优化注册页用户名、密码输入框校验提示
+[33mb57109b8[m Merge pull request #8 from MrRivery/main
+[33me8ad9bda[m Merge branch 'main' into main
+[33m50c24ce3[m feat: 注册页面添加密码格式提示（需包含字母和数字）
+[33m596887ff[m fix: 修复登录页面白屏问题，添加ResetPwd和BindWechat组件导入
+[33mc3796268[m Merge pull request #7 from AsRe6666/fix/chat-preview-routing
+[33ma0df9983[m[33m ([m[1;31morigin/fix/chat-preview-routing[m[33m)[m fix: chat preview routing to /chats, add reference preview page support
+[33mf9160685[m Merge upstream/main: sync latest changes from team
+[33m427ae505[m Merge pull request #6 from AsRe6666/feature/customize-sidebar-icons
+[33m6379592f[m[33m ([m[1;31morigin/feature/customize-sidebar-icons[m[33m)[m Merge branch 'main' into feature/customize-sidebar-icons
+[33mdf878ca9[m feat: simplify login flow, fix file preview blob handling, relax password rules
+[33m6ea77d09[m Merge pull request #5 from AsRe6666/feature/login-page-remove-unused
+[33me6e18ca0[m Merge branch 'main' into feature/login-page-remove-unused
+[33m09baa8c6[m feat: 登录页面清理无用代码
+[33m74e5b99b[m fix: resolve merge conflicts and fix duplicate SparkMD5 import
+[33mcee44ba8[m Merge upstream/main: update with latest changes including sidebar icons, org-tag validation, and PDF preview
+[33mc0a4c8fa[m Merge pull request #4 from AsRe6666/feature/customize-sidebar-icons
+[33mbb8f3eef[m Merge branch 'worktree-feature+validate-org-tag-frontend' into feature/customize-sidebar-icons
+[33m510322e0[m feat: replace logo with custom cow.svg, rebrand Soybean→NewBee, fix PaiSmart compat
+[33mc43fc4c6[m Merge pull request #3 from AsRe6666/feature/customize-sidebar-icons
+[33mc4f84759[m feat: add frontend org-tag validation before file upload
+[33mee2a333d[m feat: fix login userName->username; fix pdf-preview
+[33m96d93710[m fix: 修复登录注册API字段名不匹配问题（userName -> username）
+[33md6bc0067[m fix: update backend API URL to localhost:8081
+[33mdd39839c[m Merge remote-tracking branch 'upstream/main'
+[33m68b41bd1[m fix: remove deprecated injectCode from vite-plugin-mock v3 config
+[33m9d71bba1[m fix: patch naive-ui moz-focus-inner pseudo-element typo
+[33mb8f752c2[m feat: customize sidebar icons and fix CSS warnings
+[33m2cbfd84f[m fix: restore mock plugin and complete mock data
+[33mf441d1f8[m Merge branch 'feature/rag-frontend-chat'
+[33mab3d6ddd[m[33m ([m[1;31morigin/feature/rag-frontend-chat[m[33m)[m feat: add knowledge-base & org-tag modules, fix chat list display
+[33mda893202[m Merge pull request #1 from AsRe6666/feature/rag-frontend-chat
+[33m4d7d9e15[m feat: remove default homepage and tab bar, add manual login control
+[33m01657634[m fix: align mock success code to 200, trim mock defs, fix code block CSS
+[33mb85d199d[m chore(chat): remove debug log from store
+[33m2d758f52[m fix(chat): fix mock fallback and remove Suspense causing blank message list
+[33m666ece06[m feat(chat): add mock API module and RAG chat interface
+[33mab2b9896[m fix: remove bogus onlyBuiltDependencies config causing ERR_PNPM_IGNORED_BUILDS
+[33m5a6eed71[m fix: add missing enum, formatDate, i18n, and dependencies for chat module
+[33m238b580f[m feat: add RAG chat module with mock data
+[33mb3ed7ef1[m feat(router): support `isDev` meta to load routes only in development
+[33mb49b5379[m feat(constants): export `isDev` environment flag
+[33mc81105b2[m fix(packages): mobile sider stuck at w-0 in production
+[33m1c84e352[m fix(packages): fix ERR_USE_AFTER_CLOSE error when pressing Ctrl+C during commit
+[33m349da31a[m feat(packages): check git staging area before showing commit prompts
+[33m2eda885d[m fix(docs): update FeiShu group image URL with cache-busting query parameter
+[33m3d13aa7e[m feat(docs): update communication group details to FeiShu in README
+[33m6a5e703c[m feat(docs): update Vite version from 7 to 8 in README and package.json
+[33m61bf7ab8[m chore(projects): release v2.2.0
+[33m55fa9eb9[m chore(deps): update deps
+[33mf92a0369[m chore(pnpm)!: update pnpm from v10 to v11
+[33md6eb9944[m chore(projects): release v2.1.1
+[33m705c51d2[m fix(workflows): update actions/checkout and actions/setup-node to v6
+[33m43ceeac7[m docs(readme): add SoybeanUI section with description and badges
+[33m9831fdb5[m fix(i18n-ally): add missing TypeScript compiler options. fixed #907
+[33m54d09de1[m optimize(mix-menu): use stable Symbol.for as MixMenu context key. fixed #919
+[33m47a24d1f[m refactor(hooks): simplify useContext implementation and improve type definitions
+[33m24144d75[m fix(projects): fix ts and lint error
+[33m14b3f468[m chore(deps): update deps
+[33m0f8a1cdd[m chore(deps): update deps
+[33m175cb5d7[m fix(tsconfig): change moduleResolution to 'bundler' across multiple packages
+[33m3ee1e678[m fix(assets): add ts-expect-error comment for svg icons type error
+[33mb5769920[m fix(bin): update import statement for index file
+[33m542c8031[m chore(deps): update deps
+[33m0ebbfca8[m fix(vscode): add oxc.vscode extension and update settings for formatting. fixed #904
+[33m9d332604[m fix(components): correction of wrong label bar configuration explanation.
+[33m3115b540[m fix(projects): fix wrong new tab opening for external link navigation.
+[33mf208b023[m fix(projects): resolve width abnormal issue of NColorPicker.
+[33mfb00c853[m chore(projects): release v2.1.0
+[33m1039b6bb[m fix(router): simplify route guard logic and remove unnecessary next calls
+[33m329ad560[m optimize(projects): optimize unocss config
+[33mb277f900[m style(projects): fix lint code and format code
+[33mab1ede4a[m chore(projects)!: integrate oxlint and oxfmt
+[33mc592a32b[m chore(deps): update deps
+[33m46fd1774[m optimize(projects): modify the injection location of the token.
+[33mc97fddec[m fix(projects): correct HTML lang attribute to standard format
+[33mbbe69481[m fix(projects): ensure HTML lang attribute is updated when setting locale
+[33m21e25e38[m feat(types): Added type definition `force` to router push options.
+[33ma0f5a3be[m fix(projects): fix NButton props conflicts.
+[33ma30b5e9b[m fix(projects): fix the long list TableColumnSetting component exceeds the viewport.
+[33m88176369[m feat(workflows): add opencode workflow for issue and PR comment triggers
+[33m873dc004[m chore(deps): update deps
+[33m6d16f3e2[m docs(projects): V2 has been released.
+[33m112122bd[m feat(components): Add “Select All” to TableColumnSetting
+[33mb1057208[m feat(projects): add the plugin: vite-plugin-vue-transition-root-validator, to optimi

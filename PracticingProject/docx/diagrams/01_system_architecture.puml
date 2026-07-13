@@ -1,0 +1,84 @@
+@startuml
+!define RECTANGLE class
+
+skinparam componentStyle rectangle
+skinparam backgroundColor #FEFEFE
+skinparam component {
+  BackgroundColor #E8F0FE
+  BorderColor #1A73E8
+  FontSize 12
+}
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor #E65100
+}
+skinparam queue {
+  BackgroundColor #F3E5F5
+  BorderColor #7B1FA2
+}
+skinparam cloud {
+  BackgroundColor #E0F7FA
+  BorderColor #00838F
+}
+
+title 企业RAG 系统架构总览图\n(11个模块及其依赖关系)
+
+' 用户层
+actor "浏览器\n(Vue 3 前端)" as Browser
+
+' 应用层
+component "M1: Spring Boot\n应用服务框架\n(ChatHandler, AgentToolRegistry,\nHybridSearchService, ParseService)" as M1 #E8F0FE
+
+' AI 服务层
+cloud "M2: DeepSeek API\n大语言模型\n(ReAct推理+生成)" as M2 #E0F7FA
+cloud "M3: DashScope\nEmbedding API\n(text-embedding-v4)" as M3 #E0F7FA
+
+' 中间件层
+database "M4: Elasticsearch 8.10\n向量+全文检索\n(KNN+BM25混合搜索)" as M4 #FFF3E0
+database "M5: MySQL 8.0\n关系数据库\n(元数据+对话记录+分块文本)" as M5 #FFF3E0
+database "M6: Redis 7.0\n缓存服务\n(Token+Session+限流)" as M6 #FFF3E0
+queue "M7: Kafka 3.2\n消息队列\n(异步文档处理+DLT)" as M7 #F3E5F5
+database "M8: MinIO 8.5\n对象存储\n(原始文件+分片)" as M8 #FFF3E0
+
+' 解析层
+component "M9: LiteParse\nPDF解析引擎\n(CLI+OCR)" as M9 #E8F0FE
+component "M10: Apache Tika\n通用文档解析\n(AutoDetectParser)" as M10 #E8F0FE
+component "M11: HanLP\n中文分词\n(StandardTokenizer)" as M11 #E8F0FE
+
+' 关系
+Browser --> M1 : WebSocket / HTTP REST
+M1 --> M2 : REST API (SSE流式)
+M1 --> M3 : REST API
+M1 --> M4 : HTTPS (ES Client)
+M1 --> M5 : JDBC (JPA)
+M1 --> M6 : Jedis
+M1 --> M7 : KafkaTemplate
+M1 --> M8 : S3 SDK
+M1 --> M9 : CLI调用
+M1 --> M10 : Java API
+M1 --> M11 : Java API
+
+M7 --> M8 : Consumer下载文件
+M7 --> M9 : Consumer调解析
+M7 --> M10 : Consumer调解析
+M7 --> M11 : Consumer调分词
+M7 --> M3 : Consumer调向量化
+M7 --> M4 : Consumer写索引
+M7 --> M5 : Consumer写分块
+
+note right of M1
+  <b>核心编排层</b>
+  ChatHandler: ReAct Agent 循环
+  HybridSearchService: 混合检索
+  ParseService: 文档解析编排
+  FileProcessingConsumer: Kafka消费
+end note
+
+note right of M7
+  <b>异步解耦</b>
+  - 上传立即返回
+  - 后台解析+向量化
+  - 失败重试3次+DLT
+end note
+
+@enduml

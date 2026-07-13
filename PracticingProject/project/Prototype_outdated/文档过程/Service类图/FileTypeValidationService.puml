@@ -1,0 +1,15 @@
+' FileTypeValidationService 类图
+@startuml FileTypeValidationService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>FileTypeValidationService</b>" {
+    + validateFileType(fileName): FileTypeValidationResult
+    + getSupportedFileTypes(): Set<String>
+    + getSupportedExtensions(): Set<String>
+    - extractFileExtension(fileName): String
+    - getFileTypeDescription(extension): String
+}
+@enduml

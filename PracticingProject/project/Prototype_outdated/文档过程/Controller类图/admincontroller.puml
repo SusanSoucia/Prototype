@@ -1,0 +1,41 @@
+' AdminController 类图模板
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+
+class "<b>AdminController</b>" {
+    - userRepository: UserRepository
+    - jwtUtils: JwtUtils
+    - userService: UserService
+    - userTokenService: UserTokenService
+    - organizationTagRepository: OrganizationTagRepository
+    - migrationUtil: MinioMigrationUtil
+    - usageDashboardService: UsageDashboardService
+    - usageQuotaService: UsageQuotaService
+    - RateLimitConfigService: rateLimitConfigService
+    - modelProviderConfigService: ModelProviderConfigService
+    - conversationService: ConversationService
+    - documentService: DocumentService
+    + getAllUsers(token: String): ApiResult
+    + addKnowledgeDocument(token: String, file: MultipartFile, description: String): ApiResult
+    + deleteKnowledgeDocument(token: String, documentId: String): ApiResult
+    + getSystemStatus(token: String): ApiResult
+    + getUserActivities(token: String, username: String, start_date: String, end_date: String): ApiResult
+    + getUsageOverview(token: String, days: int): ApiResult
+    + createAdminUser(token: String, request: AdminUserRequest): ApiResult
+    + createOrganizationToken(token: String, request: OrgTagRequest): ApiResult
+    + getAllOrganizationTags(token: String): ApiResult
+    + assignOrgTagsToUser(token: String, userId: Long, request: AssignOrgTagsRequest): ApiResult
+    + getOrganizationTagTree(token: String, page: Integer, size: Integer): ApiResult
+    + updateOrganizationTag(token: String, tagId: String, request: OrgTagUpdateRequest): ApiResult
+    + deleteOrganizationTag(token: String, tagId: String): ApiResult
+    + updateDocumentOrgTag(token: String, fileMd5: String, request: DocumentOrgTagUpdateRequest): ApiResult
+    + updateDocumentVisibility(token: String, fileMd5: String, request: DocumentVisibilityUpdateRequest): ApiResult
+    + getUserList(token: String, keyword: String, orgtags: String, status: Integer, page: int, size: int): ApiResult
+    + getAllConversations(token: String, userid: String, start_date: String, end_date: String): ApiResult
+}
+@enduml

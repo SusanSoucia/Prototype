@@ -1,0 +1,21 @@
+' LiteParseOcrAdapterService 类图
+@startuml LiteParseOcrAdapterService
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    HeaderFontStyle Bold
+}
+class "<b>LiteParseOcrAdapterService</b>" {
+    - aliyunOcrService: AliyunOcrService
+    + recognize(file: MultipartFile, language: String, token: String): Map<String, Object>
+    - appendBlockResults(results, blockDetails: JsonNode): void
+    - appendContentFallback(results, content: String): void
+    - result(text: String, bbox: List<Double>, confidence: double): Map<String, Object>
+    - pointsToBbox(points: JsonNode): List<Double>
+    - normalizeConfidence(confidence: double): double
+    - toDouble(value: Object): double
+    - pathAny(node: JsonNode, ...fieldNames: String[]): JsonNode
+    - textAny(node: JsonNode, ...fieldNames: String[]): String
+    - numberAny(node: JsonNode, defaultValue: double, ...fieldNames: String[]): double
+}
+@enduml

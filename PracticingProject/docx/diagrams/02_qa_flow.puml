@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+skinparam responseMessageAlign center
+
+title 企业RAG 用户问答数据流 - ReAct Agent 循环
+
+actor "浏览器\n(Vue 3)" as Browser
+participant "M1: Spring Boot\n(ChatHandler)" as M1
+participant "M2: DeepSeek API" as M2
+participant "M6: Redis" as M6
+participant "M4: Elasticsearch" as M4
+participant "M5: MySQL" as M5
+
+Browser -> M1: WebSocket连接(携带JWT)
+activate M1
+M1 -> M6: 查Token有效性
+M6 --> M1: Token有效
+M1 -> M2: ReAct请求(用户问题+工具定义+历史)
+M2 --> M1: 流式推送tool_calls chunk
+M1 -> M4: KNN+BM25混合检索
+M4 --> M1: 返回SearchResult topK
+M1 -> Browser: 流式推送token chunk
+Browser -> Browser: 停止生成信号
+
+note right of M1
+  <b>ReAct循环</b>
+  - 最多4轮
+  - 最多8次工具调用
+  - 超时120秒
+  - 可随时取消
+end note
+
+note right of Browser
+  <b>流式输出</b>
+  - 逐token推送
+  - 50-200ms间隔
+  - 打字机效果
+end note
+
+@enduml
