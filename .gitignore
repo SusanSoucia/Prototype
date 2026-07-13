@@ -15,3 +15,6 @@ Thumbs.db
 
 # Node
 node_modules/
+
+# PaiSmart project (excluded from repo)
+PaiSmart/
